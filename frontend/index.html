@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>✨AI旅行プランナー</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- ヘッダー -->
+    <header class="header">
+      <div class="container">
+        <h1 class="logo">✨AI旅行プランナー</h1>
+        <p class="subtitle">
+          あなたの予算、興味、スケジュールに合わせて、AIが最適な旅行プランを自動生成します
+        </p>
+      </div>
+    </header>
+    <!-- メインコンテンツ -->
+    <main id="app-container"></main>
+
+    <script src="js/router.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        router.loadPage("input-form");
+
+        // ページロード後にフォームのイベントリスナーを設定
+        router.onPageLoaded = (pageName) => {
+          if (pageName === "input-form") {
+            const form = document.getElementById("travel-form");
+            if (form) {
+              form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                // plan-result ページに遷移
+                router.loadPage("plan-result");
+              });
+            }
+          }
+        };
+      });
+    </script>
+  </body>
+</html>
