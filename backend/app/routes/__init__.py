@@ -1,6 +1,6 @@
 """
 APIルート定義
 """
-from . import storage
+from . import storage, plan
 
-__all__ = ["storage"]
+__all__ = ["storage", "plan"]
