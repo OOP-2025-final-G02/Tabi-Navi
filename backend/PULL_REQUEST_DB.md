@@ -44,10 +44,79 @@ DATABASE_GUIDE.mdに記載されている、SQLiteデータベース・プラン
 ### 6. **APIエンドポイント**
 - [x] `app/routes/storage.py` - ストレージ管理エンドポイント
   - `GET /api/storage/plans/history` - プラン一覧取得
+    - **レスポンス例**:
+    ```json
+    {
+      "success": true,
+      "data": [
+        {
+          "plan_id": "uuid",
+          "input_data": {...},
+          "total_cost": 50000,
+          "total_duration": 1440,
+          "created_at": "2025-12-27T12:00:00",
+          "updated_at": "2025-12-27T12:00:00"
+        }
+      ],
+      "count": 1,
+      "total": 1
+    }
+    ```
   - `GET /api/storage/plans/{plan_id}` - プラン詳細取得
+    - **レスポンス例**:
+    ```json
+    {
+      "success": true,
+      "data": {
+        "plan_id": "uuid",
+        "input_data": {...},
+        "schedules": [...],
+        "total_cost": 50000,
+        "total_duration": 1440,
+        "created_at": "2025-12-27T12:00:00"
+      }
+    }
+    ```
   - `DELETE /api/storage/plans/{plan_id}` - プラン削除
+    - **レスポンス例**:
+    ```json
+    {
+      "success": true,
+      "message": "プランを削除しました"
+    }
+    ```
   - `GET /api/storage/plans/{plan_id}/edit-history` - 編集履歴取得
+    - **レスポンス例**:
+    ```json
+    {
+      "success": true,
+      "data": [
+        {
+          "id": "history_id",
+          "plan_id": "uuid",
+          "day": 1,
+          "item_index": 2,
+          "operation_type": "update",
+          "field_changed": "time",
+          "original_data": {...},
+          "updated_data": {...},
+          "created_at": "2025-12-27T12:05:00"
+        }
+      ],
+      "count": 5
+    }
+    ```
   - `GET /api/storage/status` - ストレージ状態確認
+    - **レスポンス例**:
+    ```json
+    {
+      "success": true,
+      "data": {
+        "total_plans": 5,
+        "database_status": "running"
+      }
+    }
+    ```
 
 ### 7. **例外処理**
 - [x] `app/utils/exceptions.py` - カスタム例外定義
@@ -259,6 +328,13 @@ GET  /api/storage/status                  - ストレージ状態確認
 
 ## ⚙️ 環境変数（.env）
 
+**⚠️ .env ファイルは Git にコミットしないでください。**
+
+本番環境で実際の環境変数を使用する場合、セキュリティの観点から Git にアップロードしないでください。
+
+設定テンプレートは [.env.example](.env.example) を参照してください。
+
+開発環境での使用例：
 ```env
 # Database
 DATABASE_URL=sqlite:///./data/database.db
