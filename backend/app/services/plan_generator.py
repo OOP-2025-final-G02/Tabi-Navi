@@ -1,5 +1,5 @@
 """
-旅行プラン生成サービス
+AI旅行プラン生成サービス
 """
 
 import uuid
@@ -12,7 +12,7 @@ from app.utils.exceptions import GeminiAPIError, ValidationError
 
 
 class PlanGeneratorService:
-    """旅行プラン生成"""
+    """プラン生成サービス"""
     
     def __init__(self):
         """初期化"""
@@ -100,7 +100,7 @@ class PlanGeneratorService:
 
 
 # グローバルインスタンス
-_plan_generator = None
+_plan_generator = PlanGenerator()
 
 
 def get_plan_generator() -> PlanGeneratorService:
