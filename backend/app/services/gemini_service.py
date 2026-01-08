@@ -4,6 +4,7 @@ Gemini API通信サービス
 
 import asyncio
 import json
+import google.generativeai as genai
 from datetime import datetime
 from typing import Dict, Any
 from google.generativeai import GenerativeModel
@@ -20,10 +21,16 @@ class GeminiService:
             raise ValueError("GEMINI_API_KEY環境変数が設定されていません")
         
         # Gemini APIの初期化
-        import google.generativeai as genai
-        genai.configure(api_key=settings.GEMINI_API_KEY)
+        try:
+            genai.configure(api_key=settings.GEMINI_API_KEY)
+        except Exception as e:
+            raise GeminiAPIError(f"Gemini API 初期化エラー: {str(e)}")
         
-        self.model = GenerativeModel('gemini-pro')
+        try:
+            self.model = GenerativeModel('gemini-pro')
+        except Exception as e:
+            raise GeminiAPIError(f"モデルロードエラー: {str(e)}")
+        
         self.timeout = settings.AI_REQUEST_TIMEOUT
     
     async def call_gemini(
@@ -55,8 +62,11 @@ class GeminiService:
             return response
         except asyncio.TimeoutError:
             raise GeminiAPIError(f"Gemini API タイムアウト ({self.timeout}秒)")
+        except GeminiAPIError:
+            # 既に GeminiAPIError の場合はそのまま再スロー
+            raise
         except Exception as e:
-            raise GeminiAPIError(f"Gemini API エラー: {str(e)}")
+            raise GeminiAPIError(f"予期しないエラー: {type(e).__name__}: {str(e)}")
     
     async def _call_api(
         self, 
@@ -65,20 +75,33 @@ class GeminiService:
         max_tokens: int
     ) -> Dict[str, Any]:
         """APIを実際に呼び出す（内部メソッド）"""
-        # 非同期でAPI呼び出しを実行
-        response = await asyncio.to_thread(
-            self._sync_generate_content,
-            prompt,
-            temperature,
-            max_tokens
-        )
-        
-        # レスポンスをJSON化
-        response_text = response.text
         try:
-            return json.loads(response_text)
-        except json.JSONDecodeError as e:
-            raise GeminiAPIError(f"JSON パースエラー: {str(e)}\nレスポンス: {response_text[:500]}")
+            # 非同期でAPI呼び出しを実行
+            response = await asyncio.to_thread(
+                self._sync_generate_content,
+                prompt,
+                temperature,
+                max_tokens
+            )
+            
+            # レスポンスがNoneの場合
+            if response is None:
+                raise GeminiAPIError("API レスポンスが空です")
+            
+            # レスポンスをJSON化
+            response_text = response.text
+            if not response_text:
+                raise GeminiAPIError("API がテキストレスポンスを返しませんでした")
+            
+            try:
+                return json.loads(response_text)
+            except json.JSONDecodeError as e:
+                raise GeminiAPIError(f"JSON パースエラー: {str(e)}\nレスポンス: {response_text[:500]}")
+        
+        except GeminiAPIError:
+            raise
+        except Exception as e:
+            raise GeminiAPIError(f"API呼び出しエラー: {type(e).__name__}: {str(e)}")
     
     def _sync_generate_content(
         self,
@@ -87,14 +110,31 @@ class GeminiService:
         max_tokens: int
     ):
         """同期版のコンテンツ生成（スレッドで実行）"""
-        response = self.model.generate_content(
-            prompt,
-            generation_config={
-                'temperature': temperature,
-                'max_output_tokens': max_tokens,
-            }
-        )
-        return response
+        try:
+            # プロンプトの検証
+            if not prompt or len(prompt.strip()) == 0:
+                raise ValueError("プロンプトが空です")
+            
+            response = self.model.generate_content(
+                prompt,
+                generation_config={
+                    'temperature': temperature,
+                    'max_output_tokens': max_tokens,
+                }
+            )
+            
+            # レスポンスの検証
+            if not response:
+                raise GeminiAPIError("API がレスポンスを返しませんでした")
+            
+            return response
+        
+        except ValueError as e:
+            raise GeminiAPIError(f"パラメータエラー: {str(e)}")
+        except GeminiAPIError:
+            raise
+        except Exception as e:
+            raise GeminiAPIError(f"コンテンツ生成エラー: {type(e).__name__}: {str(e)}")
     
     async def generate_travel_plan(
         self, 
@@ -110,26 +150,38 @@ class GeminiService:
             
         Returns:
             Dict[str, Any]: 生成されたプラン
+            
+        Raises:
+            GeminiAPIError: プラン生成エラー
         """
-        # プロンプト生成
-        prompt = self._create_travel_prompt(travel_input)
+        try:
+            # プロンプト生成
+            prompt = self._create_travel_prompt(travel_input)
+            
+            # Gemini API呼び出し
+            response = await self.call_gemini(
+                prompt=prompt,
+                temperature=0.7,
+                max_tokens=2048
+            )
+            
+            # ログ記録
+            await self._save_api_log(plan_id, prompt, response)
+            
+            return response
         
-        # Gemini API呼び出し
-        response = await self.call_gemini(
-            prompt=prompt,
-            temperature=0.7,
-            max_tokens=2048
-        )
-        
-        # ログ記録
-        await self._save_api_log(plan_id, prompt, response)
-        
-        return response
+        except GeminiAPIError:
+            raise
+        except Exception as e:
+            raise GeminiAPIError(f"旅行プラン生成エラー: {type(e).__name__}: {str(e)}")
     
     def _create_travel_prompt(self, travel_input) -> str:
         """旅行プラン用プロンプト生成"""
-        from app.services.prompts.travel_plan_prompt import create_travel_prompt
-        return create_travel_prompt(travel_input)
+        try:
+            from app.services.prompts.travel_plan_prompt import create_travel_prompt
+            return create_travel_prompt(travel_input)
+        except Exception as e:
+            raise GeminiAPIError(f"プロンプト生成エラー: {type(e).__name__}: {str(e)}")
     
     async def _save_api_log(
         self, 
@@ -138,8 +190,12 @@ class GeminiService:
         response: Dict
     ) -> None:
         """リクエスト・レスポンスをJSONファイルに記録"""
-        from app.utils.json_handler import save_gemini_log
-        await save_gemini_log(plan_id, request, response)
+        try:
+            from app.utils.json_handler import save_gemini_log
+            await save_gemini_log(plan_id, request, response)
+        except Exception as e:
+            # ログ保存失敗は警告として記録するが、プラン生成は成功とする
+            print(f"警告: ログ保存失敗 - {type(e).__name__}: {str(e)}")
 
 
 # グローバルインスタンス（遅延初期化）

@@ -4,6 +4,10 @@
 
 import os
 from typing import Optional
+from dotenv import load_dotenv
+
+# .env ファイルを読み込む
+load_dotenv()
 
 
 class Settings:
