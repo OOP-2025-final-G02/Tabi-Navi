@@ -29,11 +29,30 @@
         if (!form) return;
 
         const formData = new FormData(form);
+        
+        // 開始日と終了日から日数を計算
+        const startDate = new Date(formData.get("start-date"));
+        const endDate = new Date(formData.get("end-date"));
+        const durationMs = endDate - startDate;
+        const duration = Math.ceil(durationMs / (1000 * 60 * 60 * 24)) + 1;
+
+        // 選択された興味カテゴリを取得
+        const selectedCategories = Array.from(
+          document.querySelectorAll(".interest-btn.active")
+        ).map(btn => btn.getAttribute("data-category"));
+        const interests = selectedCategories.join("、");
+
         const data = {
+          tripTitle: formData.get("trip-title") || "",
+          departure: formData.get("departure") || "",
           destination: formData.get("destination") || "",
-          budget: formData.get("budget") || "",
-          duration: formData.get("duration") || "",
-          interests: formData.get("interests") || ""
+          startDate: formData.get("start-date") || "",
+          endDate: formData.get("end-date") || "",
+          budget: parseInt(formData.get("budget")) || 0,
+          people: parseInt(formData.get("people")) || 1,
+          duration: duration || 1,
+          interests: interests || "",
+          mustVisit: formData.get("must-visit") || ""
         };
 
         // localStorageに保存
@@ -55,22 +74,18 @@
        */
       async function callPlanGenerationAPI(formData) {
         // 旅行日数から開始日と終了日を計算
-        const today = new Date();
-        const start_date = today.toISOString().split('T')[0];
-        
-        const endDate = new Date(today);
-        endDate.setDate(endDate.getDate() + parseInt(formData.duration) - 1);
-        const end_date = endDate.toISOString().split('T')[0];
+        const start_date = formData.startDate;
+        const end_date = formData.endDate;
 
         // API リクエスト用データ
         const apiRequest = {
-          origin: "東京",  // デフォルト出発地
+          origin: formData.departure || "東京",  // 出発場所を使用
           destination: formData.destination,
           start_date: start_date,
           end_date: end_date,
           budget: parseInt(formData.budget),
           interests: formData.interests ? formData.interests.split("、").filter(i => i.trim()) : [],
-          additional_notes: ""
+          additional_notes: formData.mustVisit || ""
         };
 
         const response = await fetch("http://localhost:8000/api/plans", {
@@ -98,10 +113,26 @@
         const savedData = localStorage.getItem("travelFormData");
         if (savedData) {
           const data = JSON.parse(savedData);
-          document.getElementById("destination").value = data.destination;
-          document.getElementById("budget").value = data.budget;
-          document.getElementById("duration").value = data.duration;
-          document.getElementById("interests").value = data.interests;
+          if (document.getElementById("trip-title")) document.getElementById("trip-title").value = data.tripTitle || "";
+          if (document.getElementById("departure")) document.getElementById("departure").value = data.departure || "";
+          if (document.getElementById("destination")) document.getElementById("destination").value = data.destination || "";
+          if (document.getElementById("start-date")) document.getElementById("start-date").value = data.startDate || "";
+          if (document.getElementById("end-date")) document.getElementById("end-date").value = data.endDate || "";
+          if (document.getElementById("budget")) document.getElementById("budget").value = data.budget || "";
+          if (document.getElementById("people")) document.getElementById("people").value = data.people || 1;
+          if (document.getElementById("must-visit")) document.getElementById("must-visit").value = data.mustVisit || "";
+          
+          // 興味カテゴリを復元
+          if (data.interests) {
+            const categories = data.interests.split("、").filter(i => i.trim());
+            document.querySelectorAll(".interest-btn").forEach(btn => {
+              if (categories.includes(btn.getAttribute("data-category"))) {
+                btn.classList.add("active");
+              } else {
+                btn.classList.remove("active");
+              }
+            });
+          }
         }
       }
 
@@ -115,38 +146,39 @@
         const data = JSON.parse(savedData);
 
         // プラン概要を更新
-        if (data.destination) {
-          document.getElementById("preview-destination").textContent = 
-            `${data.destination}への旅行プラン`;
-        }
+        const titleText = data.tripTitle ? `${data.tripTitle}` : `${data.destination}への旅行プラン`;
+        const destEl = document.getElementById("preview-destination");
+        if (destEl) destEl.textContent = titleText;
 
         const summaryParts = [];
+        if (data.startDate && data.endDate) {
+          const start = new Date(data.startDate).toLocaleDateString("ja-JP");
+          const end = new Date(data.endDate).toLocaleDateString("ja-JP");
+          summaryParts.push(`${start} ～ ${end}`);
+        }
         if (data.duration) summaryParts.push(`${data.duration}日間`);
+        if (data.people) summaryParts.push(`${data.people}名`);
         if (data.budget) summaryParts.push(`予算: ¥${parseInt(data.budget).toLocaleString()}`);
         if (summaryParts.length > 0) {
-          document.getElementById("preview-summary").textContent = summaryParts.join(" • ");
+          const summaryEl = document.getElementById("preview-summary");
+          if (summaryEl) summaryEl.textContent = summaryParts.join(" • ");
         }
 
         // 入力値表示
-        document.getElementById("preview-destination-value").textContent = 
-          data.destination || "未入力";
-        document.getElementById("preview-destination-value").className = 
-          `preview-value ${!data.destination ? "empty" : ""}`;
+        const setPreviewValue = (elementId, value, fallback = "未入力") => {
+          const el = document.getElementById(elementId);
+          if (el) {
+            el.textContent = value || fallback;
+            el.className = `preview-value ${!value ? "empty" : ""}`;
+          }
+        };
 
-        document.getElementById("preview-budget-value").textContent = 
-          data.budget ? `¥${parseInt(data.budget).toLocaleString()}` : "未入力";
-        document.getElementById("preview-budget-value").className = 
-          `preview-value ${!data.budget ? "empty" : ""}`;
-
-        document.getElementById("preview-duration-value").textContent = 
-          data.duration ? `${data.duration}日間` : "未入力";
-        document.getElementById("preview-duration-value").className = 
-          `preview-value ${!data.duration ? "empty" : ""}`;
-
-        document.getElementById("preview-interests-value").textContent = 
-          data.interests || "未入力";
-        document.getElementById("preview-interests-value").className = 
-          `preview-value ${!data.interests ? "empty" : ""}`;
+        setPreviewValue("preview-destination-value", data.destination);
+        setPreviewValue("preview-budget-value", data.budget ? `¥${parseInt(data.budget).toLocaleString()}` : "");
+        setPreviewValue("preview-duration-value", data.duration ? `${data.duration}日間` : "");
+        setPreviewValue("preview-people-value", data.people ? `${data.people}名` : "");
+        setPreviewValue("preview-departure-value", data.departure);
+        setPreviewValue("preview-interests-value", data.interests);
 
         // 生成されたプランを表示
         const generatedPlan = localStorage.getItem("generatedPlan");
@@ -156,11 +188,9 @@
             generateSchedulePreview(plan);
           } catch (error) {
             console.error("プランのパースエラー:", error);
-            // フォールバック: 簡易プレビューを表示
             generateSchedulePreview(data);
           }
         } else {
-          // プランが未生成の場合は簡易プレビューを表示
           generateSchedulePreview(data);
         }
       }
@@ -206,7 +236,7 @@
 
           // タイムライン
           if (daySchedule.timeline && Array.isArray(daySchedule.timeline)) {
-            daySchedule.timeline.forEach(activity => {
+            daySchedule.timeline.forEach((activity, activityIndex) => {
               content += `
                 <div class="timeline-item">
                   <div class="timeline-time">${activity.time}</div>
@@ -218,6 +248,10 @@
                       <span class="duration">${activity.duration}分</span>
                     </div>
                     <div class="activity-notes">${activity.notes}</div>
+                  </div>
+                  <div class="activity-actions">
+                    <button class="btn-edit" onclick="editActivity(${daySchedule.day - 1}, ${activityIndex})" title="編集">✏️</button>
+                    <button class="btn-delete" onclick="deleteActivity(${daySchedule.day - 1}, ${activityIndex})" title="削除">🗑️</button>
                   </div>
                 </div>
               `;
@@ -239,6 +273,133 @@
           <div><strong>合計時間:</strong> ${Math.floor(plan.total_duration / 60)}時間</div>
         `;
         container.appendChild(totalDiv);
+      }
+
+      /**
+       * アクティビティを削除
+       */
+      function deleteActivity(dayIndex, activityIndex) {
+        const generatedPlan = localStorage.getItem("generatedPlan");
+        if (!generatedPlan) return;
+
+        try {
+          const plan = JSON.parse(generatedPlan);
+          
+          if (plan.schedules[dayIndex] && plan.schedules[dayIndex].timeline[activityIndex]) {
+            const activity = plan.schedules[dayIndex].timeline[activityIndex];
+            const cost = activity.cost || 0;
+            
+            plan.schedules[dayIndex].timeline.splice(activityIndex, 1);
+            plan.schedules[dayIndex].daily_cost -= cost;
+            plan.total_cost -= cost;
+            const duration = activity.duration || 0;
+            plan.total_duration -= duration;
+            
+            localStorage.setItem("generatedPlan", JSON.stringify(plan));
+            displayPreview();
+          }
+        } catch (error) {
+          console.error("Deletion error:", error);
+        }
+      }
+
+      /**
+       * アクティビティを編集
+       */
+      function editActivity(dayIndex, activityIndex) {
+        const generatedPlan = localStorage.getItem("generatedPlan");
+        if (!generatedPlan) return;
+
+        try {
+          const plan = JSON.parse(generatedPlan);
+          const activity = plan.schedules[dayIndex].timeline[activityIndex];
+          
+          if (!activity) return;
+
+          const modal = document.getElementById("edit-modal") || createEditModal();
+          
+          document.getElementById("edit-time").value = activity.time;
+          document.getElementById("edit-activity").value = activity.activity;
+          document.getElementById("edit-location").value = activity.location;
+          document.getElementById("edit-cost").value = activity.cost;
+          document.getElementById("edit-duration").value = activity.duration;
+          document.getElementById("edit-notes").value = activity.notes;
+          
+          document.getElementById("edit-save").onclick = () => {
+            const updatedActivity = {
+              time: document.getElementById("edit-time").value,
+              activity: document.getElementById("edit-activity").value,
+              location: document.getElementById("edit-location").value,
+              cost: parseInt(document.getElementById("edit-cost").value),
+              duration: parseInt(document.getElementById("edit-duration").value),
+              notes: document.getElementById("edit-notes").value
+            };
+            
+            const costDiff = updatedActivity.cost - activity.cost;
+            const durationDiff = updatedActivity.duration - activity.duration;
+            
+            plan.schedules[dayIndex].timeline[activityIndex] = updatedActivity;
+            plan.schedules[dayIndex].daily_cost += costDiff;
+            plan.total_cost += costDiff;
+            plan.total_duration += durationDiff;
+            
+            localStorage.setItem("generatedPlan", JSON.stringify(plan));
+            
+            modal.style.display = "none";
+            displayPreview();
+          };
+          
+          modal.style.display = "block";
+        } catch (error) {
+          console.error("Edit error:", error);
+        }
+      }
+
+      /**
+       * 編集モーダルを作成
+       */
+      function createEditModal() {
+        const modal = document.createElement("div");
+        modal.id = "edit-modal";
+        modal.className = "modal";
+        modal.innerHTML = `
+          <div class="modal-content">
+            <span class="close" onclick="document.getElementById('edit-modal').style.display='none'">&times;</span>
+            <h2>Edit Activity</h2>
+            <form>
+              <div class="form-group">
+                <label>Time:</label>
+                <input type="time" id="edit-time" required>
+              </div>
+              <div class="form-group">
+                <label>Activity:</label>
+                <input type="text" id="edit-activity" required>
+              </div>
+              <div class="form-group">
+                <label>Location:</label>
+                <input type="text" id="edit-location" required>
+              </div>
+              <div class="form-group">
+                <label>Cost (¥):</label>
+                <input type="number" id="edit-cost" required>
+              </div>
+              <div class="form-group">
+                <label>Duration (min):</label>
+                <input type="number" id="edit-duration" required>
+              </div>
+              <div class="form-group">
+                <label>Notes:</label>
+                <textarea id="edit-notes" rows="3"></textarea>
+              </div>
+              <div class="modal-buttons">
+                <button type="button" id="edit-save" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('edit-modal').style.display='none'">Cancel</button>
+              </div>
+            </form>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        return modal;
       }
 
       /**
@@ -305,6 +466,15 @@
             if (form) {
               // 入力値をリアルタイムでlocalStorageに保存
               form.addEventListener("input", saveFormToStorage);
+
+              // 興味ボタンのクリック処理
+              const interestBtns = document.querySelectorAll(".interest-btn");
+              interestBtns.forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  btn.classList.toggle("active");
+                });
+              });
 
               // フォーム送信
               form.addEventListener("submit", async (e) => {
