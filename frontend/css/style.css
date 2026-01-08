@@ -419,4 +419,318 @@ textarea {
     .interest-buttons {
         grid-template-columns: 1fr 1fr;
     }
+
+    .plan-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .preview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========================================
+   旅行プラン結果表示画面（プレビュー版）
+   ======================================== */
+
+.plan-result-container {
+    background: var(--surface);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--border);
+    gap: var(--spacing-lg);
+}
+
+.plan-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.btn-back {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-back:hover {
+    background-color: #475569;
+    transform: translateX(-3px);
+}
+
+/* プラン概要 */
+.plan-overview {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+    color: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.overview-content {
+    max-width: 600px;
+}
+
+.overview-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.overview-summary {
+    font-size: 1rem;
+    opacity: 0.95;
+    margin: 0;
+}
+
+/* 入力値プレビューカード */
+.input-preview-card,
+.schedule-preview-card {
+    background: var(--background);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    margin-bottom: var(--spacing-xl);
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+.preview-item {
+    background: var(--surface);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.preview-item:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
+}
+
+.preview-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.preview-value {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin: 0;
+    word-break: break-word;
+}
+
+.preview-value.empty {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* プレビューノート */
+.preview-note {
+    background: #fef3c7;
+    color: #92400e;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border-left: 4px solid #f59e0b;
+    margin-bottom: var(--spacing-md);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* 日程プレビュータイムライン */
+.schedule-preview-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.day-preview {
+    background: var(--surface);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.2s ease;
+}
+
+.day-preview:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.day-preview-header {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+}
+
+.day-preview-time {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.day-preview-description {
+    color: var(--text-secondary);
+    margin: var(--spacing-sm) 0 0 0;
+    font-size: 0.95rem;
+}
+
+/* アクション */
+.plan-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    margin-top: var(--spacing-xl);
+}
+
+.btn {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+/* ========================================
+   API レスポンス用タイムライン表示
+   ======================================== */
+
+.timeline-item {
+    display: flex;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border);
+}
+
+.timeline-time {
+    min-width: 70px;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    margin-right: var(--spacing-md);
+}
+
+.timeline-activity {
+    flex: 1;
+}
+
+.activity-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+    font-size: 1.05rem;
+}
+
+.activity-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.activity-details span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.activity-notes {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-style: italic;
+    padding: var(--spacing-sm);
+    background-color: var(--background);
+    border-left: 3px solid var(--primary-color);
+    border-radius: 0.25rem;
+}
+
+.day-preview-footer {
+    text-align: right;
+    font-weight: 600;
+    color: var(--primary-color);
+    padding: var(--spacing-sm);
+    background-color: var(--background);
+    border-radius: var(--border-radius);
+    margin-top: var(--spacing-md);
+}
+
+.plan-summary-box {
+    background: linear-gradient(135deg, var(--primary-color), #1e40af);
+    color: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    margin-top: var(--spacing-lg);
+    display: flex;
+    justify-content: space-around;
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+}
+
+.plan-summary-box div {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .timeline-item {
+        flex-direction: column;
+    }
+
+    .timeline-time {
+        margin-bottom: var(--spacing-sm);
+        margin-right: 0;
+    }
+
+    .plan-summary-box {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
 }
