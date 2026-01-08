@@ -21,6 +21,18 @@
     --success: #10b981;
     --warning: #f59e0b;
     --error: #ef4444;
+
+    /* カラーパレット - ライトブルー系 */
+    --primary-color: #0ea5e9;
+    --primary-hover: #0284c7;
+    --secondary-color: #06b6d4;
+    --background: #f0f9ff;
+    --surface: #ffffff;
+    --card-bg: #ffffff;
+    --text-primary: #0c4a6e;
+    --text-secondary: #475569;
+    --border: #bae6fd;
+    --accent: #38bdf8;
     
     /* スペーシング */
     --spacing-xs: 0.5rem;
@@ -420,3 +432,183 @@ textarea {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* ========================================
+           入力フォーム画面
+           ======================================== */
+
+           .input-form-container {
+            padding: var(--spacing-xl) 0 var(--spacing-xl) 0;
+        }
+
+        #trip-title {
+            font-weight: 500;
+          }
+
+        .form-card {
+            background: var(--card-bg);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            max-width: 650px;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+        }
+
+        .form-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+
+        .form-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+            font-size: 0.95rem;
+        }
+
+        #travel-form .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        #travel-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        #travel-form input[type="text"],
+        #travel-form input[type="date"],
+        #travel-form input[type="number"],
+        #travel-form textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: var(--surface);
+            color: var(--text-primary);
+        }
+
+        #travel-form input[type="text"]:focus,
+        #travel-form input[type="date"]:focus,
+        #travel-form input[type="number"]:focus,
+        #travel-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        #travel-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        /* 興味カテゴリボタン */
+        .interest-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .category-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .interest-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .interest-btn {
+            padding: var(--spacing-md);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .interest-btn:hover {
+            border-color: var(--primary-color);
+            background: rgba(14, 165, 233, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .interest-btn.active {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        #travel-form .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: var(--spacing-md);
+            box-shadow: var(--shadow-md);
+        }
+
+        #travel-form .submit-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        #travel-form .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* プレースホルダーのスタイル */
+        #travel-form input::placeholder,
+        #travel-form textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .interest-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-card {
+                padding: var(--spacing-md);
+            }
+        }
