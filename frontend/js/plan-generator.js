@@ -462,10 +462,9 @@ window.addEventListener("DOMContentLoaded", () => {
   // 保存されたフォーム値を復元
   restoreFormFromStorage();
 
-  router.loadPage("input-form");
-
-  // ページロード後にフォームのイベントリスナーを設定
-  router.onPageLoaded = (pageName) => {
+  // window.app オブジェクトにページロードコールバックを設定
+  window.app = window.app || {};
+  window.app.onPageLoaded = (pageName) => {
     if (pageName === "input-form") {
       const form = document.getElementById("travel-form");
       if (form) {
@@ -495,4 +494,6 @@ window.addEventListener("DOMContentLoaded", () => {
       displayPreview();
     }
   };
+
+  router.loadPage("input-form");
 });
