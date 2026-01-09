@@ -2,22 +2,24 @@
    基本設定
    ======================================== */
 
-* {
+   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 :root {
-    /* カラーパレット */
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
-    --secondary-color: #64748b;
-    --background: #f8fafc;
+    /* カラーパレット - ライトブルー系 */
+    --primary-color: #0ea5e9;
+    --primary-hover: #0284c7;
+    --secondary-color: #06b6d4;
+    --background: #f0f9ff;
     --surface: #ffffff;
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --border: #e2e8f0;
+    --card-bg: #ffffff;
+    --text-primary: #0c4a6e;
+    --text-secondary: #475569;
+    --border: #bae6fd;
+    --accent: #38bdf8;
     --success: #10b981;
     --warning: #f59e0b;
     --error: #ef4444;
@@ -84,40 +86,8 @@ body {
 }
 
 /* ========================================
-   メインコンテンツ
+   共通フォーム要素
    ======================================== */
-
-.main {
-    padding: var(--spacing-xl) 0;
-    min-height: calc(100vh - 300px);
-}
-
-.section {
-    margin-bottom: var(--spacing-xl);
-}
-
-.section-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-primary);
-}
-
-.section-description {
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-lg);
-}
-
-/* ========================================
-   フォーム
-   ======================================== */
-
-.form-container {
-    background: var(--surface);
-    padding: var(--spacing-xl);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
-}
 
 .form-group {
     margin-bottom: var(--spacing-lg);
@@ -151,6 +121,8 @@ textarea {
     font-size: 1rem;
     transition: all 0.3s ease;
     font-family: inherit;
+    background: var(--surface);
+    color: var(--text-primary);
 }
 
 input[type="text"]:focus,
@@ -159,7 +131,13 @@ input[type="number"]:focus,
 textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
 }
 
 textarea {
@@ -167,43 +145,7 @@ textarea {
 }
 
 /* ========================================
-   興味カテゴリボタン
-   ======================================== */
-
-.interest-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: var(--spacing-sm);
-}
-
-.interest-btn {
-    padding: var(--spacing-md);
-    border: 2px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--surface);
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-xs);
-}
-
-.interest-btn:hover {
-    border-color: var(--primary-color);
-    background: rgba(37, 99, 235, 0.05);
-}
-
-.interest-btn.active {
-    border-color: var(--primary-color);
-    background: var(--primary-color);
-    color: white;
-}
-
-/* ========================================
-   ボタン
+   共通ボタン
    ======================================== */
 
 .submit-btn {
@@ -212,7 +154,7 @@ textarea {
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     font-size: 1.125rem;
     font-weight: 700;
     cursor: pointer;
@@ -257,130 +199,56 @@ textarea {
 }
 
 /* ========================================
-   ローディング
+   興味カテゴリボタン（共通）
    ======================================== */
 
-.loading-container {
-    text-align: center;
-    padding: var(--spacing-xl) 0;
-}
-
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 4px solid var(--border);
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto var(--spacing-md);
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.loading-text {
-    font-size: 1.125rem;
-    color: var(--text-secondary);
-}
-
-/* ========================================
-   プラン表示
-   ======================================== */
-
-.plan-container {
-    background: var(--surface);
-    padding: var(--spacing-xl);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
-}
-
-.plan-header {
-    margin-bottom: var(--spacing-lg);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 2px solid var(--border);
-}
-
-.plan-summary {
+.interest-buttons {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.interest-btn {
     padding: var(--spacing-md);
-    background: var(--background);
-    border-radius: var(--radius-md);
-}
-
-.summary-item {
-    text-align: center;
-}
-
-.summary-label {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-xs);
-}
-
-.summary-value {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.day-schedule {
-    margin-bottom: var(--spacing-xl);
-}
-
-.day-header {
-    background: var(--primary-color);
-    color: white;
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    font-weight: 700;
-}
-
-.timeline {
     border: 2px solid var(--border);
-    border-top: none;
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
-}
-
-.timeline-item {
-    padding: var(--spacing-md);
-    border-bottom: 1px solid var(--border);
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: var(--spacing-md);
-}
-
-.timeline-item:last-child {
-    border-bottom: none;
-}
-
-.timeline-time {
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.timeline-content h4 {
-    margin-bottom: var(--spacing-xs);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    text-align: center;
     color: var(--text-primary);
 }
 
-.timeline-details {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
+.interest-btn:hover {
+    border-color: var(--primary-color);
+    background: rgba(14, 165, 233, 0.05);
+    transform: translateY(-2px);
 }
 
-.spot-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--primary-color);
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-right: var(--spacing-xs);
+.interest-btn.active {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+}
+
+/* ========================================
+   共通カード
+   ======================================== */
+
+.card {
+    background: var(--card-bg);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+}
+
+.category-note {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
 }
 
 /* ========================================
@@ -396,7 +264,7 @@ textarea {
 }
 
 /* ========================================
-   レスポンシブデザイン
+   レスポンシブデザイン（共通）
    ======================================== */
 
 @media (max-width: 768px) {
@@ -408,15 +276,11 @@ textarea {
         font-size: 1rem;
     }
     
-    .form-container {
-        padding: var(--spacing-md);
-    }
-    
     .form-row {
         grid-template-columns: 1fr;
     }
     
     .interest-buttons {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 }

@@ -4,6 +4,31 @@
     <h2>旅行プランを作成</h2>
     <form id="travel-form">
       <div class="form-group">
+        <label for="trip-title">旅行タイトル（任意）</label>
+        <input
+          type="text"
+          id="trip-title"
+          name="trip-title"
+          placeholder="例：はじめての京都、癒しの沖縄ひとり旅"
+        />
+        <p class="category-note">
+          あなたの旅に名前をつけてみましょう
+        </p>
+      </div>
+      <!-- 出発場所 -->
+      <div class="form-group">
+        <label for="departure">出発場所</label>
+        <input
+          type="text"
+          id="departure"
+          name="departure"
+          placeholder="例: 東京、大阪、福岡"
+          required
+        />
+      </div>
+
+      <!-- 目的地 -->
+      <div class="form-group">
         <label for="destination">目的地</label>
         <input
           type="text"
@@ -14,40 +39,93 @@
         />
       </div>
 
+      <!-- 開始日 -->
       <div class="form-group">
-        <label for="budget">予算（円）</label>
+        <label for="start-date">開始日</label>
         <input
-          type="number"
-          id="budget"
-          name="budget"
-          placeholder="例: 50000"
+          type="date"
+          id="start-date"
+          name="start-date"
           required
         />
       </div>
 
+      <!-- 終了日 -->
       <div class="form-group">
-        <label for="duration">旅行日数</label>
+        <label for="end-date">終了日</label>
+        <input
+          type="date"
+          id="end-date"
+          name="end-date"
+          required
+        />
+      </div>
+
+      <!-- 予算 -->
+      <div class="form-group">
+        <label for="budget">予算 (円)</label>
         <input
           type="number"
-          id="duration"
-          name="duration"
-          placeholder="例: 3"
+          id="budget"
+          name="budget"
+          placeholder="例: 100000"
+          required
+        />
+      </div>
+
+      <!-- 人数 -->
+      <div class="form-group">
+        <label for="people">人数</label>
+        <input
+          type="number"
+          id="people"
+          name="people"
+          value="1"
           min="1"
           required
         />
       </div>
 
-      <div class="form-group">
-        <label for="interests">興味・関心</label>
-        <textarea
-          id="interests"
-          name="interests"
-          placeholder="例: 観光、グルメ、ショッピング、温泉"
-          rows="4"
-        ></textarea>
+      <!-- 興味カテゴリ -->
+      <div class="interest-buttons">
+        <button type="button" class="interest-btn" data-category="food">
+          🍣 グルメ・食べ歩き
+        </button>
+      
+        <button type="button" class="interest-btn" data-category="history">
+          🏯 歴史・名所
+        </button>
+      
+        <button type="button" class="interest-btn" data-category="nature">
+          🌿 自然・景色
+        </button>
+      
+        <button type="button" class="interest-btn" data-category="shopping">
+          🛍 ショッピング
+        </button>
+      
+        <button type="button" class="interest-btn" data-category="activity">
+          🎢 アクティビティ
+        </button>
+      
+        <button type="button" class="interest-btn" data-category="culture">
+          🎎 文化体験
+        </button>
       </div>
 
-      <button type="submit" class="submit-btn">プランを生成する</button>
+      <!-- 絶対に行きたいところ -->
+      <div class="form-group">
+        <label for="must-visit">絶対に行きたいところ</label>
+        <textarea
+          id="must-visit"
+          name="must-visit"
+          placeholder="例: 清水寺、金閣寺、伏見稲荷大社(複数ある場合は改行してください)"
+          rows="4"
+        ></textarea>
+        <p class="category-note">特に訪れたい場所を入力してください(任意)</p>
+      </div>
+
+      <button type="submit" class="submit-btn">プラン生成</button>
     </form>
   </div>
 </div>
