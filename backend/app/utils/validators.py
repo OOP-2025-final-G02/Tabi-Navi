@@ -3,8 +3,8 @@
 """
 
 from datetime import datetime
-from app.models.travel_plan import TravelInput
-from app.utils.exceptions import ValidationError
+from ..models.travel_plan import TravelInput
+from .exceptions import ValidationError
 
 
 def validate_travel_input(data: dict) -> bool:

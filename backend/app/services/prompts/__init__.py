@@ -4,7 +4,7 @@
 
 from typing import List
 import json
-from app.models.travel_plan import TravelInput
+from ...models.travel_plan import TravelInput
 
 
 def create_travel_prompt(travel_input: TravelInput) -> str:

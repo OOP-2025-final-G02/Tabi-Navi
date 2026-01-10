@@ -5,10 +5,10 @@ AI旅行プラン生成サービス
 import uuid
 from datetime import datetime
 from typing import Optional
-from app.models.travel_plan import TravelPlan, TravelInput, DaySchedule
-from app.services.gemini_service import get_gemini_service
-from app.services.prompts.travel_plan_prompt import parse_gemini_response, validate_plan_structure
-from app.utils.exceptions import GeminiAPIError, ValidationError
+from ..models.travel_plan import TravelPlan, TravelInput, DaySchedule
+from .gemini_service import get_gemini_service
+from .prompts.travel_plan_prompt import parse_gemini_response, validate_plan_structure
+from ..utils.exceptions import GeminiAPIError, ValidationError
 
 
 class PlanGeneratorService:
@@ -100,7 +100,10 @@ class PlanGeneratorService:
 
 
 # グローバルインスタンス
-_plan_generator = PlanGenerator()
+_plan_generator = PlanGeneratorService()
+
+# エクスポート用インスタンス
+plan_generator = _plan_generator
 
 
 def get_plan_generator() -> PlanGeneratorService:

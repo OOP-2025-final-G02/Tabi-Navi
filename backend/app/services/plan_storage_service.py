@@ -6,9 +6,9 @@ from typing import List, Optional
 from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
-from app.models.db_models import TravelPlanDB, TimelineItemHistory
-from app.models.travel_plan import TravelPlan
-from app.utils.exceptions import PlanNotFoundError, DatabaseError
+from ..models.db_models import TravelPlanDB, TimelineItemHistory
+from ..models.travel_plan import TravelPlan
+from ..utils.exceptions import PlanNotFoundError, DatabaseError
 
 
 class PlanStorageService:
