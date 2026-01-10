@@ -6,8 +6,8 @@ from typing import List, Optional
 from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
-from app.models.db_models import TimelineItemHistory
-from app.utils.exceptions import DatabaseError
+from ..models.db_models import TimelineItemHistory
+from ..utils.exceptions import DatabaseError
 
 
 class HistoryService:

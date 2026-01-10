@@ -4,12 +4,17 @@ Gemini API通信サービス
 
 import asyncio
 import json
+import sys
+from pathlib import Path
 import google.generativeai as genai
 from datetime import datetime
 from typing import Dict, Any
 from google.generativeai import GenerativeModel
-from app.config import settings
-from app.utils.exceptions import GeminiAPIError
+
+# Add backend directory to path for config import
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from config import settings
+from ..utils.exceptions import GeminiAPIError
 
 
 class GeminiService:
@@ -178,7 +183,7 @@ class GeminiService:
     def _create_travel_prompt(self, travel_input) -> str:
         """旅行プラン用プロンプト生成"""
         try:
-            from app.services.prompts.travel_plan_prompt import create_travel_prompt
+            from .prompts.travel_plan_prompt import create_travel_prompt
             return create_travel_prompt(travel_input)
         except Exception as e:
             raise GeminiAPIError(f"プロンプト生成エラー: {type(e).__name__}: {str(e)}")
@@ -191,7 +196,7 @@ class GeminiService:
     ) -> None:
         """リクエスト・レスポンスをJSONファイルに記録"""
         try:
-            from app.utils.json_handler import save_gemini_log
+            from ..utils.json_handler import save_gemini_log
             await save_gemini_log(plan_id, request, response)
         except Exception as e:
             # ログ保存失敗は警告として記録するが、プラン生成は成功とする
