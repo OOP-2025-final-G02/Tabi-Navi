@@ -1,15 +1,75 @@
-<!-- 旅行日程を書くやつを書いて欲しいです -->
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/result.css" />
 
-<html>
-  <body>
-    <div class="form-group">
-      <label for="interests">興味・関心</label>
-      <textarea
-        id="interests"
-        name="interests"
-        placeholder="例: 観光、グルメ、ショッピング、温泉"
-        rows="4"
-      ></textarea>
+<!-- 旅行プラン結果表示画面 -->
+<div class="plan-result-container">
+  <!-- ヘッダー -->
+  <div class="plan-header">
+    <h1 class="plan-title">✨ 旅行プランプレビュー</h1>
+    <button class="btn-back" onclick="router.loadPage('input-form')">← 条件を変更</button>
+  </div>
+
+  <!-- プラン概要 -->
+  <div class="plan-overview">
+    <div class="overview-content">
+      <h2 id="preview-destination" class="overview-title">旅行プラン</h2>
+      <p id="preview-summary" class="overview-summary">フォーム入力値に基づいたプレビュー</p>
     </div>
-  </body>
-</html>
+  </div>
+
+  <!-- 入力値表示エリア -->
+  <div class="input-preview-card">
+    <h2 class="card-title">入力された条件</h2>
+    <div class="preview-grid">
+      <div class="preview-item">
+        <span class="preview-label">📍 目的地</span>
+        <p id="preview-destination-value" class="preview-value">未入力</p>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">💰 予算</span>
+        <p id="preview-budget-value" class="preview-value">未入力</p>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">📅 旅行日数</span>
+        <p id="preview-duration-value" class="preview-value">未入力</p>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">👥 人数</span>
+        <p id="preview-people-value" class="preview-value">未入力</p>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">📍 出発地</span>
+        <p id="preview-departure-value" class="preview-value">未入力</p>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">❤️ 興味・関心</span>
+        <p id="preview-interests-value" class="preview-value">未入力</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 日程プレビューセクション -->
+  <div class="schedule-preview-card">
+    <h2 class="card-title" id="schedule-title">生成されたプラン</h2>
+    
+    <div id="schedule-preview-container" class="schedule-preview-timeline">
+      <!-- JavaScript で動的に生成 -->
+    </div>
+  </div>
+
+  <!-- アクション -->
+  <div class="plan-actions">
+    <button class="btn btn-primary" onclick="router.loadPage('input-form')">新しいプランを作成</button>
+  </div>
+
+  <!-- 既存コード保持 -->
+  <div class="form-group" style="display: none;">
+    <label for="interests">興味・関心</label>
+    <textarea
+      id="interests"
+      name="interests"
+      placeholder="例: 観光、グルメ、ショッピング、温泉"
+      rows="4"
+    ></textarea>
+  </div>
+</div>
