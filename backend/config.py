@@ -4,6 +4,10 @@
 
 import os
 from typing import Optional
+from dotenv import load_dotenv
+
+# .env ファイルを読み込む
+load_dotenv()
 
 
 class Settings:
@@ -33,6 +37,11 @@ class Settings:
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
     GOOGLE_MAPS_API_KEY: Optional[str] = os.getenv("GOOGLE_MAPS_API_KEY")
     WEATHER_API_KEY: Optional[str] = os.getenv("WEATHER_API_KEY")
+    GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY")
+    
+    # AI 設定
+    AI_REQUEST_TIMEOUT: int = int(os.getenv("AI_REQUEST_TIMEOUT", "30"))
+    PLAN_AUTO_DELETE_DAYS: int = int(os.getenv("PLAN_AUTO_DELETE_DAYS", "365"))
 
 
 settings = Settings()
