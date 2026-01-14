@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>✨AI旅行プランナー</title>
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/form.css"  />
+
+    <link rel="stylesheet" href="css/result.css" />
+    <link rel="stylesheet" href="css/form.css" />
+
   </head>
   <body>
     <!-- ヘッダー -->
@@ -21,23 +24,10 @@
     <main id="app-container"></main>
 
     <script src="js/router.js"></script>
+    <script src="js/plan-generator.js"></script>
     <script>
       window.addEventListener("DOMContentLoaded", () => {
         router.loadPage("input-form");
-
-        // ページロード後にフォームのイベントリスナーを設定
-        router.onPageLoaded = (pageName) => {
-          if (pageName === "input-form") {
-            const form = document.getElementById("travel-form");
-            if (form) {
-              form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                // plan-result ページに遷移
-                router.loadPage("plan-result");
-              });
-            }
-          }
-        };
       });
     </script>
   </body>
