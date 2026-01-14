@@ -38,22 +38,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ストレージエンドポイント登録
+# ストレージエンドポイント登録（APIエンドポイントを先に登録）
 app.include_router(storage.router)
 
 
-@app.get("/")
-async def root():
-    """ルートエンドポイント - index.html を返す"""
-    from fastapi.responses import FileResponse
-    frontend_path = Path(__file__).parent.parent.parent / "frontend"
-    index_path = frontend_path / "index.html"
-    if index_path.exists():
-        return FileResponse(str(index_path))
-    return {"message": "AI旅行プランナー API へようこそ"}
-
-
-# フロントエンド静的ファイルを配信（/ の後に配置してルートを優先させる）
+# フロントエンド静的ファイルを配信（最後にマウント - 全パスをキャッチするため）
 frontend_path = Path(__file__).parent.parent.parent / "frontend"
 if frontend_path.exists():
     app.mount("/", StaticFiles(directory=str(frontend_path), html=True), name="frontend")

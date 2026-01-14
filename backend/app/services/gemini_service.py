@@ -11,9 +11,7 @@ from datetime import datetime
 from typing import Dict, Any
 from google.generativeai import GenerativeModel
 
-# Add backend directory to path for config import
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from config import settings
+from app.config import settings
 from ..utils.exceptions import GeminiAPIError
 
 
