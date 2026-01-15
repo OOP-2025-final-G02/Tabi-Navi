@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
 from pathlib import Path
-from app.models.db_models import Base
+from ..models.db_models import Base
 
 # データベースパス
 DB_PATH = Path(__file__).parent.parent.parent / "data" / "database.db"
@@ -78,7 +78,7 @@ def cleanup_old_plans(days: int = 365) -> int:
         int: 削除したプラン数
     """
     from datetime import datetime, timedelta
-    from app.models.db_models import TravelPlanDB
+    from ..models.db_models import TravelPlanDB
     
     db = SessionLocal()
     try:

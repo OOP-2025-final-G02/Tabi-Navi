@@ -117,22 +117,15 @@ function restoreFormFromStorage() {
   const savedData = localStorage.getItem("travelFormData");
   if (savedData) {
     const data = JSON.parse(savedData);
-    if (document.getElementById("trip-title"))
-      document.getElementById("trip-title").value = data.tripTitle || "";
-    if (document.getElementById("departure"))
-      document.getElementById("departure").value = data.departure || "";
-    if (document.getElementById("destination"))
-      document.getElementById("destination").value = data.destination || "";
-    if (document.getElementById("start-date"))
-      document.getElementById("start-date").value = data.startDate || "";
-    if (document.getElementById("end-date"))
-      document.getElementById("end-date").value = data.endDate || "";
-    if (document.getElementById("budget"))
-      document.getElementById("budget").value = data.budget || "";
-    if (document.getElementById("people"))
-      document.getElementById("people").value = data.people || 1;
-    if (document.getElementById("must-visit"))
-      document.getElementById("must-visit").value = data.mustVisit || "";
+
+    if (document.getElementById("trip-title")) document.getElementById("trip-title").value = data.tripTitle || "";
+    if (document.getElementById("departure")) document.getElementById("departure").value = data.departure || "";
+    if (document.getElementById("destination")) document.getElementById("destination").value = data.destination || "";
+    if (document.getElementById("start-date")) document.getElementById("start-date").value = data.startDate || "";
+    if (document.getElementById("end-date")) document.getElementById("end-date").value = data.endDate || "";
+    if (document.getElementById("budget")) document.getElementById("budget").value = data.budget || "";
+    if (document.getElementById("people")) document.getElementById("people").value = data.people || 1;
+    if (document.getElementById("must-visit")) document.getElementById("must-visit").value = data.mustVisit || "";
 
     // 興味カテゴリを復元
     if (data.interests) {
@@ -315,10 +308,12 @@ function deleteActivity(dayIndex, activityIndex) {
   try {
     const plan = JSON.parse(generatedPlan);
 
+
     if (
       plan.schedules[dayIndex] &&
       plan.schedules[dayIndex].timeline[activityIndex]
     ) {
+
       const activity = plan.schedules[dayIndex].timeline[activityIndex];
       const cost = activity.cost || 0;
 
@@ -504,7 +499,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("travel-form");
       if (form) {
         // 入力値をリアルタイムでlocalStorageに保存
-        form.addEventListener("input", saveFormToStorage);
+        //form.addEventListener("input", saveFormToStorage);
 
         // 興味ボタンのクリック処理
         const interestBtns = document.querySelectorAll(".interest-btn");
