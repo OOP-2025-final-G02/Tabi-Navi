@@ -118,6 +118,7 @@ function showEmptyState() {
 function handleNewPlanClick() {
   // ここに新規プラン作成画面への遷移処理を実装
   // router.js を使用して input-form ページに遷移
+  console.log("新規作成ボタンがクリックされました");
   if (typeof router !== "undefined") {
     router.loadPage("input-form");
   }
@@ -204,8 +205,15 @@ function showError(message) {
 }
 
 // ========================================
-// ページ読み込み時の処理実行
+// ページロード時の自動初期化
 // ========================================
 
-// DOM読み込み完了後に初期化関数を実行
+// ページが読み込まれたら初期化
 document.addEventListener("DOMContentLoaded", initializePage);
+
+// ルーターでページが切り替わった時のために、少し遅延して初期化
+setTimeout(() => {
+  if (document.getElementById("btnNewPlan")) {
+    initializePage();
+  }
+}, 100);
