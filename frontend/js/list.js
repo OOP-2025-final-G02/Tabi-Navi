@@ -203,17 +203,3 @@ function showError(message) {
   // ここにエラー表示処理を実装
   // 例: トーストメッセージやアラートで表示
 }
-
-// ========================================
-// ページロード時の自動初期化
-// ========================================
-
-// ページが読み込まれたら初期化
-document.addEventListener("DOMContentLoaded", initializePage);
-
-// ルーターでページが切り替わった時のために、少し遅延して初期化
-setTimeout(() => {
-  if (document.getElementById("btnNewPlan")) {
-    initializePage();
-  }
-}, 100);
