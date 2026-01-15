@@ -116,9 +116,85 @@ function showEmptyState() {
  * 新規作成ボタンクリック時の処理
  */
 function handleNewPlanClick() {
-  // ここに新規プラン作成画面への遷移処理を実装
+  // localStorageをクリア（新規作成時）
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+  sessionStorage.setItem("clearForm", "true");
+  console.log("新規作成ボタンがクリックされました - データクリア完了");
+
   // router.js を使用して input-form ページに遷移
-  console.log("新規作成ボタンがクリックされました");
+  if (typeof router !== "undefined") {
+    router.loadPage("input-form");
+  }
+}
+function handleNewPlanClick() {
+  // localStorageをクリア（新規作成時）
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+  sessionStorage.setItem("clearForm", "true");
+  console.log("新規作成ボタンがクリックされました - データクリア完了");
+
+  // router.js を使用して input-form ページに遷移
+  if (typeof router !== "undefined") {
+    router.loadPage("input-form");
+  }
+}
+function handleNewPlanClick() {
+  // localStorageをクリア（新規作成時）
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+  sessionStorage.setItem("clearForm", "true");
+  console.log("新規作成ボタンがクリックされました - データクリア完了");
+
+  // router.js を使用して input-form ページに遷移
+  if (typeof router !== "undefined") {
+    router.loadPage("input-form");
+  }
+}
+function handleNewPlanClick() {
+  // localStorageをクリア（新規作成時）
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+  sessionStorage.setItem("clearForm", "true");
+  console.log("新規作成ボタンがクリックされました - データクリア完了");
+
+  // router.js を使用して input-form ページに遷移
+  if (typeof router !== "undefined") {
+    router.loadPage("input-form");
+  }
+}
+function handleNewPlanClick() {
+  // localStorageをクリア（新規作成時）
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+  sessionStorage.setItem("clearForm", "true");
+  console.log("新規作成ボタンがクリックされました - データクリア完了");
+
+  // router.js を使用して input-form ページに遷移
+  if (typeof router !== "undefined") {
+    router.loadPage("input-form");
+  }
+}
+function handleNewPlanClick() {
+  // localStorageをクリア（新規作成時）
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+  sessionStorage.setItem("clearForm", "true");
+  console.log("新規作成ボタンがクリックされました - データクリア完了");
+
+  // router.js を使用して input-form ページに遷移
+  if (typeof router !== "undefined") {
+    router.loadPage("input-form");
+  }
+}
+function handleNewPlanClick() {
+  // localStorageをクリア（新規作成時）
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+  sessionStorage.setItem("clearForm", "true");
+  console.log("新規作成ボタンがクリックされました - データクリア完了");
+
+  // router.js を使用して input-form ページに遷移
   if (typeof router !== "undefined") {
     router.loadPage("input-form");
   }

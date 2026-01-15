@@ -87,8 +87,6 @@ async function callPlanGenerationAPI(formData) {
       : [],
     additional_notes: formData.mustVisit || "",
   };
-
-  // TODO: バックエンド担当者へ
   // 下記のURLを環境変数で管理してください
   const API_URL = "http://localhost:8000"; // ← 環境変数化予定
 
@@ -108,6 +106,27 @@ async function callPlanGenerationAPI(formData) {
 }
 
 /**
+ * フォームをクリア（新規作成時）
+ */
+function clearForm() {
+  const form = document.getElementById("travel-form");
+  if (!form) return;
+
+  // フォームのリセット
+  form.reset();
+
+  // 興味ボタンをクリア
+  document.querySelectorAll(".interest-btn").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+
+  // localStorageをクリア
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+
+  console.log("✅ フォームをクリアしました");
+}
+/**
  * localStorageからフォーム入力値を復元
  */
 function restoreFormFromStorage() {
@@ -118,14 +137,22 @@ function restoreFormFromStorage() {
   if (savedData) {
     const data = JSON.parse(savedData);
 
-    if (document.getElementById("trip-title")) document.getElementById("trip-title").value = data.tripTitle || "";
-    if (document.getElementById("departure")) document.getElementById("departure").value = data.departure || "";
-    if (document.getElementById("destination")) document.getElementById("destination").value = data.destination || "";
-    if (document.getElementById("start-date")) document.getElementById("start-date").value = data.startDate || "";
-    if (document.getElementById("end-date")) document.getElementById("end-date").value = data.endDate || "";
-    if (document.getElementById("budget")) document.getElementById("budget").value = data.budget || "";
-    if (document.getElementById("people")) document.getElementById("people").value = data.people || 1;
-    if (document.getElementById("must-visit")) document.getElementById("must-visit").value = data.mustVisit || "";
+    if (document.getElementById("trip-title"))
+      document.getElementById("trip-title").value = data.tripTitle || "";
+    if (document.getElementById("departure"))
+      document.getElementById("departure").value = data.departure || "";
+    if (document.getElementById("destination"))
+      document.getElementById("destination").value = data.destination || "";
+    if (document.getElementById("start-date"))
+      document.getElementById("start-date").value = data.startDate || "";
+    if (document.getElementById("end-date"))
+      document.getElementById("end-date").value = data.endDate || "";
+    if (document.getElementById("budget"))
+      document.getElementById("budget").value = data.budget || "";
+    if (document.getElementById("people"))
+      document.getElementById("people").value = data.people || 1;
+    if (document.getElementById("must-visit"))
+      document.getElementById("must-visit").value = data.mustVisit || "";
 
     // 興味カテゴリを復元
     if (data.interests) {
@@ -308,12 +335,10 @@ function deleteActivity(dayIndex, activityIndex) {
   try {
     const plan = JSON.parse(generatedPlan);
 
-
     if (
       plan.schedules[dayIndex] &&
       plan.schedules[dayIndex].timeline[activityIndex]
     ) {
-
       const activity = plan.schedules[dayIndex].timeline[activityIndex];
       const cost = activity.cost || 0;
 
@@ -489,14 +514,20 @@ function displaySimpleSchedule(data) {
  * ページロード時の初期化
  */
 window.addEventListener("DOMContentLoaded", () => {
-  // 保存されたフォーム値を復元
-  restoreFormFromStorage();
-
   // window.app オブジェクトにページロードコールバックを設定
   window.app = window.app || {};
   window.app.onPageLoaded = (pageName) => {
     if (pageName === "input-form") {
       const form = document.getElementById("travel-form");
+      // 新規作成の場合は古いデータをクリア
+      const shouldClearForm = sessionStorage.getItem("clearForm");
+      if (shouldClearForm === "true") {
+        clearForm();
+        sessionStorage.removeItem("clearForm");
+      } else {
+        // 保存されたフォーム値を復元
+        restoreFormFromStorage();
+      }
       if (form) {
         // 入力値をリアルタイムでlocalStorageに保存
         //form.addEventListener("input", saveFormToStorage);
