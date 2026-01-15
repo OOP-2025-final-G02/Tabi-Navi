@@ -11,17 +11,17 @@ async function saveFormToStorage() {
   if (!form) return;
 
   const formData = new FormData(form);
-  
+
   // 開始日と終了日から日数を計算
   const startDate = new Date(formData.get("start-date"));
   const endDate = new Date(formData.get("end-date"));
-  
+
   // バリデーション: 終了日が開始日より前でないか確認
   if (endDate < startDate) {
     alert("終了日は開始日以降である必要があります");
     return;
   }
-  
+
   const durationMs = endDate - startDate;
   // Math.floor()で切り捨て（1月10日～1月10日=1日、+1で対応）
   const duration = Math.floor(durationMs / (1000 * 60 * 60 * 24)) + 1;
@@ -89,7 +89,7 @@ async function callPlanGenerationAPI(formData) {
   // TODO: バックエンド担当者へ
   // 下記のURLを環境変数で管理してください
   const API_URL = "http://localhost:8000"; // ← 環境変数化予定
-  
+
   const response = await fetch(`${API_URL}/api/plans`, {
     method: "POST",
     headers: {
@@ -123,7 +123,7 @@ function restoreFormFromStorage() {
     if (document.getElementById("budget")) document.getElementById("budget").value = data.budget || "";
     if (document.getElementById("people")) document.getElementById("people").value = data.people || 1;
     if (document.getElementById("must-visit")) document.getElementById("must-visit").value = data.mustVisit || "";
-    
+
     // 興味カテゴリを復元
     if (data.interests) {
       const categories = data.interests.split("、").filter(i => i.trim());
@@ -286,17 +286,17 @@ function deleteActivity(dayIndex, activityIndex) {
 
   try {
     const plan = JSON.parse(generatedPlan);
-    
+
     if (plan.schedules[dayIndex] && plan.schedules[dayIndex].timeline[activityIndex]) {
       const activity = plan.schedules[dayIndex].timeline[activityIndex];
       const cost = activity.cost || 0;
-      
+
       plan.schedules[dayIndex].timeline.splice(activityIndex, 1);
       plan.schedules[dayIndex].daily_cost -= cost;
       plan.total_cost -= cost;
       const duration = activity.duration || 0;
       plan.total_duration -= duration;
-      
+
       localStorage.setItem("generatedPlan", JSON.stringify(plan));
       displayPreview();
     }
@@ -315,18 +315,18 @@ function editActivity(dayIndex, activityIndex) {
   try {
     const plan = JSON.parse(generatedPlan);
     const activity = plan.schedules[dayIndex].timeline[activityIndex];
-    
+
     if (!activity) return;
 
     const modal = document.getElementById("edit-modal") || createEditModal();
-    
+
     document.getElementById("edit-time").value = activity.time;
     document.getElementById("edit-activity").value = activity.activity;
     document.getElementById("edit-location").value = activity.location;
     document.getElementById("edit-cost").value = activity.cost;
     document.getElementById("edit-duration").value = activity.duration;
     document.getElementById("edit-notes").value = activity.notes;
-    
+
     document.getElementById("edit-save").onclick = () => {
       const updatedActivity = {
         time: document.getElementById("edit-time").value,
@@ -336,21 +336,21 @@ function editActivity(dayIndex, activityIndex) {
         duration: parseInt(document.getElementById("edit-duration").value),
         notes: document.getElementById("edit-notes").value
       };
-      
+
       const costDiff = updatedActivity.cost - activity.cost;
       const durationDiff = updatedActivity.duration - activity.duration;
-      
+
       plan.schedules[dayIndex].timeline[activityIndex] = updatedActivity;
       plan.schedules[dayIndex].daily_cost += costDiff;
       plan.total_cost += costDiff;
       plan.total_duration += durationDiff;
-      
+
       localStorage.setItem("generatedPlan", JSON.stringify(plan));
-      
+
       modal.style.display = "none";
       displayPreview();
     };
-    
+
     modal.style.display = "block";
   } catch (error) {
     console.error("Edit error:", error);
@@ -469,7 +469,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("travel-form");
       if (form) {
         // 入力値をリアルタイムでlocalStorageに保存
-        form.addEventListener("input", saveFormToStorage);
+        //form.addEventListener("input", saveFormToStorage);
 
         // 興味ボタンのクリック処理
         const interestBtns = document.querySelectorAll(".interest-btn");

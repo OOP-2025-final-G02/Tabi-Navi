@@ -9,17 +9,26 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from contextlib import asynccontextmanager
 from .database.db import init_db
-from .routes import storage
+from .routes import storage, plan
+from .config import settings # 設定をインポート
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """アプリケーションのライフサイクル管理"""
+    try:
+        # APIキーが読み込めているか確認（最初の数文字を表示）
+        key_hint = settings.GEMINI_API_KEY[:5] if settings.GEMINI_API_KEY else "None"
+        print(f"🔑 API Key Check: {key_hint}...")
+    except ImportError as e:
+        print(f"❌ インポートエラー: {e}")
     # Startup イベント
     init_db()
     yield
     # Shutdown イベント
     pass
+
+   
 
 
 app = FastAPI(
@@ -40,6 +49,9 @@ app.add_middleware(
 
 # ストレージエンドポイント登録（APIエンドポイントを先に登録）
 app.include_router(storage.router)
+
+# プランエンドポイント登録
+app.include_router(plan.router)
 
 
 # フロントエンド静的ファイルを配信（最後にマウント - 全パスをキャッチするため）

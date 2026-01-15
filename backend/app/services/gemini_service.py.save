@@ -5,6 +5,7 @@ Gemini API通信サービス
 import asyncio
 import google.generativeai as genai
 from app.config import settings
+pyenv shell 3.13.7
 from ..utils.exceptions import GeminiAPIError
 
 
@@ -48,9 +49,9 @@ class GeminiService:
                 prompt,
                 generation_config={
                     'temperature': 0.7,
-                    'max_output_tokens': 8192,  
-            }
-)
+                    'max_output_tokens': 2048,
+                }
+            )
             
             if not response or not hasattr(response, 'text') or not response.text:
                 raise GeminiAPIError("API から有効なテキストレスポンスが得られませんでした")
