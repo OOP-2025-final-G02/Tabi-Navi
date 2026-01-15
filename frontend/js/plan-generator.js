@@ -426,6 +426,19 @@ function createEditModal() {
       </form>
     </div>
   `;
+    // cd背景クリックで閉じる（modal-contentはクリックを止める）
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+    
+    // modal-content内のクリックはイベント伝播を止める
+    const modalContent = modal.querySelector('.modal-content');
+    modalContent.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
   document.body.appendChild(modal);
   return modal;
 }
