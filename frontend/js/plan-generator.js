@@ -54,7 +54,6 @@ async function saveFormToStorage() {
     // プランをlocalStorageに保存
     localStorage.setItem("generatedPlan", JSON.stringify(travelPlan));
   } catch (error) {
-    console.error("API呼び出しエラー:", error);
     // エラーでもプレビューは表示（ダミーデータで表示）
   }
 }
@@ -176,11 +175,10 @@ function displayPreview() {
   if (!savedData) return;
 
   const data = JSON.parse(savedData);
-
-  // プラン概要を更新
+  // プラン概要を更新（タイトル部分）
   const titleText = data.tripTitle
     ? `${data.tripTitle}`
-    : `${data.destination}への旅行プラン`;
+    : `${data.destination || "未入力"}への旅行プラン`;
   const destEl = document.getElementById("preview-destination");
   if (destEl) destEl.textContent = titleText;
 
@@ -249,11 +247,13 @@ function generateSchedulePreview(data) {
   container.innerHTML = "";
 
   // API レスポンス形式かどうかを判定
-  if (data.schedules && Array.isArray(data.schedules)) {
-    // バックエンド API レスポンス形式
+  if (
+    data.schedules &&
+    Array.isArray(data.schedules) &&
+    data.schedules.length > 0
+  ) {
     displayAPISchedule(data);
   } else {
-    // 簡易プレビュー形式（フォームデータ）
     displaySimpleSchedule(data);
   }
 }
@@ -461,6 +461,16 @@ function createEditModal() {
 function displaySimpleSchedule(data) {
   const container = document.getElementById("schedule-preview-container");
 
+  // 興味カテゴリIDを日本語に変換
+  const categoryNames = {
+    food: "グルメ・食べ歩き",
+    history: "歴史・名所",
+    nature: "自然・景色",
+    shopping: "ショッピング",
+    activity: "アクティビティ",
+    culture: "文化体験",
+  };
+
   // 入力値がない場合
   if (!data.duration || parseInt(data.duration) === 0) {
     container.innerHTML =
@@ -484,7 +494,7 @@ function displaySimpleSchedule(data) {
     if (data.interests) {
       const interestList = data.interests.split("、").slice(0, 2); // 最初の2つまで
       activities = interestList.map((interest) => ({
-        name: `${interest}体験`,
+        name: `${categoryNames[interest] || interest}体験`,
         time: `${9 + i}:00～${10 + i}:00`,
       }));
     }
