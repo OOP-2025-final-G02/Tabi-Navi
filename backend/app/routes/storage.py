@@ -4,10 +4,10 @@
 
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
-from app.database.db import get_db
-from app.services.plan_storage_service import plan_storage_service
-from app.services.history_service import history_service
-from app.utils.exceptions import PlanNotFoundError, DatabaseError
+from ..database.db import get_db
+from ..services.plan_storage_service import plan_storage_service
+from ..services.history_service import history_service
+from ..utils.exceptions import PlanNotFoundError, DatabaseError
 
 router = APIRouter(prefix="/api/storage", tags=["storage"])
 
@@ -189,7 +189,7 @@ async def get_storage_status(db: Session = Depends(get_db)):
         }
     """
     try:
-        from app.database.db import get_db_status
+        from ..database.db import get_db_status
         
         total_plans = await plan_storage_service.count_plans(db)
         

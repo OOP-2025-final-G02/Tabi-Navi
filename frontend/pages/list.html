@@ -1,0 +1,105 @@
+<!-- 旅行プラン一覧ページ -->
+<div class="list-page-container">
+  <div class="list-container">
+    <!-- 旅行プラン一覧セクション -->
+    <section class="plan-list-section">
+      <div class="section-header">
+        <div>
+          <h2 class="list-section-title">旅行プラン一覧</h2>
+          <p class="list-section-description">保存された旅行プランを管理</p>
+        </div>
+        <button class="btn-new-plan" id="btnNewPlan">
+          <span class="icon-plus">+</span>
+          <span>新規作成</span>
+        </button>
+      </div>
+
+      <!-- プランカードリスト -->
+      <div class="plan-cards" id="planCards">
+        <!-- カード1: 京都 -->
+        <div class="plan-card" data-plan-id="1">
+          <h3 class="card-destination">京都</h3>
+          <p class="card-departure">
+            <span class="icon">📍</span>
+            <span>東京発</span>
+          </p>
+
+          <div class="card-details">
+            <div class="detail-item">
+              <span class="icon">📅</span>
+              <span>3/15 - 3/18</span>
+              <span class="badge">3日間</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="icon">👥</span>
+              <span>2名</span>
+            </div>
+
+            <div class="detail-item detail-cost">
+              <span class="icon">💰</span>
+              <span class="label">総費用</span>
+              <span class="cost">¥145,000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- カード2: 沖縄 -->
+        <div class="plan-card" data-plan-id="2">
+          <h3 class="card-destination">沖縄</h3>
+          <p class="card-departure">
+            <span class="icon">📍</span>
+            <span>大阪発</span>
+          </p>
+
+          <div class="card-details">
+            <div class="detail-item">
+              <span class="icon">📅</span>
+              <span>4/20 - 4/24</span>
+              <span class="badge">4日間</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="icon">👥</span>
+              <span>4名</span>
+            </div>
+
+            <div class="detail-item detail-cost">
+              <span class="icon">💰</span>
+              <span class="label">総費用</span>
+              <span class="cost">¥198,500</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- カード3: 北海道 -->
+        <div class="plan-card" data-plan-id="3">
+          <h3 class="card-destination">北海道</h3>
+          <p class="card-departure">
+            <span class="icon">📍</span>
+            <span>東京発</span>
+          </p>
+
+          <div class="card-details">
+            <div class="detail-item">
+              <span class="icon">📅</span>
+              <span>2/10 - 2/14</span>
+              <span class="badge">4日間</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="icon">👥</span>
+              <span>2名</span>
+            </div>
+
+            <div class="detail-item detail-cost">
+              <span class="icon">💰</span>
+              <span class="label">総費用</span>
+              <span class="cost">¥175,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

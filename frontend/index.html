@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="css/result.css" />
     <link rel="stylesheet" href="css/form.css" />
-
+    <link rel="stylesheet" href="css/list.css" />
   </head>
   <body>
     <!-- ヘッダー -->
@@ -24,10 +24,11 @@
     <main id="app-container"></main>
 
     <script src="js/router.js"></script>
+    <script src="js/list.js"></script>
     <script src="js/plan-generator.js"></script>
     <script>
       window.addEventListener("DOMContentLoaded", () => {
-        router.loadPage("input-form");
+        router.init();
       });
     </script>
   </body>

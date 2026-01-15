@@ -1,0 +1,213 @@
+/* 旅行プラン一覧ページ専用スタイル */
+
+/* コンテナ */
+.list-container {
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ヘッダー */
+.list-header {
+    margin-bottom: 60px;
+}
+
+.main-title {
+    font-size: 48px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+}
+
+.list-subtitle {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* セクションヘッダー */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0 auto;
+    max-width: 1400px;
+}
+
+.list-section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+}
+
+.list-section-description {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+}
+
+/* 新規作成ボタン */
+.btn-new-plan {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-new-plan:hover {
+    background: #1d4ed8;
+}
+
+.icon-plus {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+/* プランカードリスト */
+.plan-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 1400px;
+    margin-top: 30px;
+}
+
+/* プランカード */
+.plan-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 32px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.plan-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border-color: #d1d5db;
+}
+
+/* カードタイトル（目的地） */
+.card-destination {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 12px 0;
+}
+
+/* 出発地 */
+.card-departure {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 24px 0;
+}
+
+/* カード詳細セクション */
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 詳細項目 */
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.detail-item .icon {
+    font-size: 16px;
+    opacity: 0.7;
+}
+
+/* バッジ（日数表示） */
+.badge {
+    margin-left: auto;
+    background: #f3f4f6;
+    color: #4b5563;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* 総費用 */
+.detail-cost {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 8px;
+}
+
+.detail-cost .label {
+    color: #6b7280;
+}
+
+.detail-cost .cost {
+    margin-left: auto;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1200px) {
+    .plan-cards {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .list-container {
+        padding: 24px 16px;
+    }
+
+    .main-title {
+        font-size: 36px;
+    }
+
+    .list-subtitle {
+        font-size: 14px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .btn-new-plan {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .plan-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .plan-card {
+        padding: 24px;
+    }
+}

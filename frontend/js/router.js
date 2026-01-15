@@ -6,13 +6,50 @@ class Router {
   constructor() {
     this.container = document.getElementById("app-container");
     this.currentPage = null;
+
+    // ハッシュ変更イベントをリッスン
+    window.addEventListener("hashchange", () => this.handleRouteChange());
   }
 
   /**
-   * 指定されたページをロードして表示
-   * @param {string} pageName - ページ名（input-form, loading, plan-result）
+   * URLハッシュからページ名を取得
+   * @returns {string} ページ名
    */
-  async loadPage(pageName) {
+  getPageFromHash() {
+    const hash = window.location.hash;
+    // #/page/list -> list
+    // #/page/input-form -> input-form
+    const match = hash.match(/^#\/page\/(.+)$/);
+    return match ? match[1] : "list"; // デフォルトはlist
+  }
+
+  /**
+   * ハッシュ変更時の処理
+   */
+  handleRouteChange() {
+    const pageName = this.getPageFromHash();
+    this.loadPageContent(pageName);
+  }
+
+  /**
+   * 指定されたページをロードして表示（URLも更新）
+   * @param {string} pageName - ページ名（input-form, loading, plan-result, list）
+   * @param {boolean} updateUrl - URLを更新するか（デフォルト: true）
+   */
+  async loadPage(pageName, updateUrl = true) {
+    // URLを更新
+    if (updateUrl) {
+      window.location.hash = `#/page/${pageName}`;
+    }
+
+    await this.loadPageContent(pageName);
+  }
+
+  /**
+   * ページコンテンツをロード（URL更新なし）
+   * @param {string} pageName - ページ名
+   */
+  async loadPageContent(pageName) {
     try {
       const response = await fetch(`pages/${pageName}.html`);
 
@@ -41,6 +78,11 @@ class Router {
     if (window.app && typeof window.app.onPageLoaded === "function") {
       window.app.onPageLoaded(pageName);
     }
+
+    // listページの初期化
+    if (pageName === "list" && typeof initializePage === "function") {
+      initializePage();
+    }
   }
 
   /**
@@ -61,6 +103,14 @@ class Router {
    */
   getCurrentPage() {
     return this.currentPage;
+  }
+
+  /**
+   * 初期化：URLハッシュに基づいてページをロード
+   */
+  init() {
+    const pageName = this.getPageFromHash();
+    this.loadPageContent(pageName);
   }
 }
 
