@@ -78,6 +78,11 @@ class Router {
     if (window.app && typeof window.app.onPageLoaded === "function") {
       window.app.onPageLoaded(pageName);
     }
+
+    // listページの初期化
+    if (pageName === "list" && typeof initializePage === "function") {
+      initializePage();
+    }
   }
 
   /**
