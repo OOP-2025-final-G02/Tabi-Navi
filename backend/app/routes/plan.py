@@ -3,12 +3,14 @@
 """
 
 from fastapi import APIRouter, HTTPException
+import logging
 from typing import List
 from app.models.travel_plan import TravelInput, TravelPlan
 from app.services.plan_generator import get_plan_generator
 from app.utils.exceptions import GeminiAPIError, ValidationError
 
 router = APIRouter(prefix="/api/plans", tags=["plans"])
+logger = logging.getLogger(__name__)
 
 
 @router.post("", response_model=TravelPlan)
@@ -36,11 +38,22 @@ async def generate_plan(travel_input: TravelInput) -> TravelPlan:
             detail=f"入力データ検証エラー: {str(e)}"
         )
     except GeminiAPIError as e:
+        error_msg = str(e)
+        logger.error(f"Gemini API Error: {error_msg}")
+        
+        # クォータ超過（429）の場合のユーザーフレンドリーなメッセージ
+        if "429" in error_msg or "ResourceExhausted" in error_msg:
+            raise HTTPException(
+                status_code=503,
+                detail="AIサービスの1日の利用上限に達しました。明日再度お試しいただくか、別のモデルをご検討ください。"
+            )
+            
         raise HTTPException(
             status_code=503,
-            detail=f"AI プラン生成エラー: {str(e)}"
+            detail=f"AI プラン生成エラー: {error_msg}"
         )
     except Exception as e:
+        logger.error(f"Unexpected Error: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=f"予期しないエラー: {type(e).__name__}: {str(e)}"
