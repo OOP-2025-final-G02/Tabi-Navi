@@ -6,6 +6,7 @@ FastAPI アプリケーションの初期化と設定
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pathlib import Path
 from contextlib import asynccontextmanager
 from .database.db import init_db
@@ -55,9 +56,25 @@ app.include_router(plan.router)
 
 
 # フロントエンド静的ファイルを配信（最後にマウント - 全パスをキャッチするため）
-frontend_path = Path(__file__).parent.parent.parent / "frontend"
+project_root = Path(__file__).resolve().parent.parent.parent
+frontend_path = project_root / "frontend"
+
+print(f"📂 Project Root: {project_root}")
+print(f"📂 Frontend Path: {frontend_path}")
+
+# ルートパスで index.html を明示的に返す
+@app.get("/")
+async def serve_index():
+    index_file = frontend_path / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    return {"error": "index.html not found", "path": str(index_file)}, 404
+
 if frontend_path.exists():
+    print("✅ Frontend directory found. Mounting static files.")
     app.mount("/", StaticFiles(directory=str(frontend_path), html=True), name="frontend")
+else:
+    print("⚠️ Frontend directory NOT found. Web interface will not be available.")
 
 
 if __name__ == "__main__":

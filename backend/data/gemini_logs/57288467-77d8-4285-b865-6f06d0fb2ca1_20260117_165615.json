@@ -1,0 +1,10 @@
+{
+  "plan_id": "57288467-77d8-4285-b865-6f06d0fb2ca1",
+  "timestamp": "2026-01-17T16:56:15.634662",
+  "request": {
+    "prompt": "あなたは旅行プランナーです。以下の条件で6日間の旅行プランをJSON形式で生成してください。\n\n## 旅行条件\n出発地: 名古屋\n目的地: 沖縄\n開始日: 2026-08-17\n終了日: 2026-08-22\n日数: 6日間\n予算: ¥120,000\n興味: nature\n追加要望: 特になし\n\n## 必須要件\n1. 各日は朝食・観光・昼食・観光・夕食を含める\n2. 時刻はHH:MM形式（24時間制）\n3. 費用は日本円で記載\n4. durationは分単位\n5. 予算内に収める\n\n## 出力形式\n必ず以下のJSON形式のみを返してください。説明文は一切含めないでください。\n\n{\n  \"schedules\": [\n    {\n      \"day\": 1,\n      \"date\": \"2026-08-17\",\n      \"timeline\": [\n        {\n          \"time\": \"08:00\",\n          \"activity\": \"朝食\",\n          \"location\": \"ホテル\",\n          \"cost\": 1500,\n          \"duration\": 60,\n          \"notes\": \"和定食\"\n        },\n        {\n          \"time\": \"09:30\",\n          \"activity\": \"観光スポット\",\n          \"location\": \"沖縄の名所\",\n          \"cost\": 1000,\n          \"duration\": 120,\n          \"notes\": \"朝一番がおすすめ\"\n        }\n      ],\n      \"daily_cost\": 10000,\n      \"daily_duration\": 600\n    }\n  ],\n  \"total_cost\": 120000,\n  \"total_duration\": 3600\n}\n\n重要: JSONのみを返し、```json```のマーカーも含めないでください。"
+  },
+  "response": {
+    "text": "```json\n{\n  \"schedules\": [\n    {\n      \"day\": 1,\n      \"date\": \"2026-08-17\",\n      \"timeline\": [\n        {\n          \"time\": \"07:00\",\n          \"activity\": \"名古屋から那覇へ移動 (フライト)\",\n          \"location\": \"中部国際空港セントレア (NGO) -> 那覇空港 (OKA)\",\n          \"cost\": 14000,\n          \"duration\": 180,\n          \"notes\": \"LCC利用で費用を抑える\"\n        },\n        {\n          \"time\": \"10:30\",\n          \"activity\": \"那覇空港からホテルへ移動\",\n          \"location\": \"那覇空港\",\n          \"cost\": 1000,\n          \"duration\": 60,\n          \"notes\": \"ゆいレールまたはバス利用\"\n        },\n        {\n          \"time\": \"11:30\",\n          \"activity\": \"ホテルチェックイン\",\n          \"location\": \"那覇市内ホテル\",\n          \"cost\": 4400,\n          \"duration\": 30,\n          \"notes\": \"荷物を預けて観光へ\"\n        },\n        {\n          \"time\": \"12:00\",\n          \"activity\": \"昼食\",\n          \"location\": \"那覇市内レストラン\",\n          \"cost\": 12"
+  }
+}
