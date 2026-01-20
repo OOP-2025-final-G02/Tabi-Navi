@@ -87,8 +87,8 @@ async function callPlanGenerationAPI(formData) {
     must_visit: formData.mustVisit || "",
     travelers: formData.people || 1,
   };
-  // 下記のURLを環境変数で管理してください
-  const API_URL = "http://localhost:8000"; // ← 環境変数化予定
+  
+  const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
 
   const response = await fetch(`${API_URL}/api/plans`, {
     method: "POST",
@@ -544,7 +544,7 @@ async function savePlanToDB() {
     return;
   }
 
-  const API_URL = "http://localhost:8000"; // 環境に合わせて変更してください
+  const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
 
   try {
     const response = await fetch(`${API_URL}/api/storage/plans`, {

@@ -47,7 +47,8 @@ async function fetchTravelPlans() {
   // 例: GET /api/plans
   // 返り値例: [{ id, destination, departure, startDate, endDate, participants, totalCost, ... }]
   try {
-    const API_URL = "http://localhost:8000";
+    // 環境変数が定義されていればそれを使い、なければデフォルト値を使用
+    const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
     const response = await fetch(`${API_URL}/api/storage/plans/history`);
     
     if (!response.ok) throw new Error("プラン一覧の取得に失敗しました");
