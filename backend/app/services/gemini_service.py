@@ -20,7 +20,7 @@ class GeminiService:
         try:
             genai.configure(api_key=settings.GEMINI_API_KEY)
             # 安定性の高い最新モデルを使用
-            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            self.model = genai.GenerativeModel('gemini-2.5-flash')
         except Exception as e:
             raise GeminiAPIError(f"Gemini API 初期化エラー: {str(e)}")
         

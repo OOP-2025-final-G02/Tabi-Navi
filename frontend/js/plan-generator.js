@@ -50,9 +50,9 @@ async function saveFormToStorage() {
 
   // バックエンド API を呼び出す
   try {
-    console.log("🚀 プラン生成APIへの接続を開始します...");
+    // console.log("🚀 プラン生成APIへの接続を開始します...");
     const travelPlan = await callPlanGenerationAPI(data);
-    console.log("✅ API接続成功: プランを受信しました", travelPlan);
+    // console.log("✅ API接続成功: プランを受信しました", travelPlan);
     alert("プランの生成に成功しました！\n結果画面へ移動します。");
     // プランをlocalStorageに保存
     localStorage.setItem("generatedPlan", JSON.stringify(travelPlan));
@@ -129,7 +129,7 @@ function clearForm() {
   localStorage.removeItem("travelFormData");
   localStorage.removeItem("generatedPlan");
 
-  console.log("✅ フォームをクリアしました");
+  // console.log("✅ フォームをクリアしました");
 }
 /**
  * localStorageからフォーム入力値を復元

@@ -45,7 +45,7 @@ async def generate_plan(travel_input: TravelInput) -> TravelPlan:
         if "429" in error_msg or "ResourceExhausted" in error_msg:
             raise HTTPException(
                 status_code=503,
-                detail="AIサービスの利用制限（レートリミット）に達しました。しばらく時間（1分程度）を空けてから再度お試しください。"
+                detail="AIサービスの利用制限に達しました。しばらく時間を空けてから再度お試しください。"
             )
             
         raise HTTPException(
