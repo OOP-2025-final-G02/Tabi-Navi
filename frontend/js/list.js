@@ -47,6 +47,7 @@ async function fetchTravelPlans() {
   // 例: GET /api/plans
   // 返り値例: [{ id, destination, departure, startDate, endDate, participants, totalCost, ... }]
   try {
+    console.log("🚀 プラン一覧の取得を開始します...");
     // 環境変数が定義されていればそれを使い、なければデフォルト値を使用
     const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
     const response = await fetch(`${API_URL}/api/storage/plans/history`);
@@ -54,9 +55,11 @@ async function fetchTravelPlans() {
     if (!response.ok) throw new Error("プラン一覧の取得に失敗しました");
     
     const result = await response.json();
+    console.log("✅ プラン一覧の取得に成功しました");
     return result.success ? result.data : [];
   } catch (error) {
     console.error("Fetch error:", error);
+    alert("サーバーに接続できませんでした。\nバックエンドが起動しているか確認してください。");
     return [];
   }
 }

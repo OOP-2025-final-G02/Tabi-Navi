@@ -50,10 +50,15 @@ async function saveFormToStorage() {
 
   // バックエンド API を呼び出す
   try {
+    console.log("🚀 プラン生成APIへの接続を開始します...");
     const travelPlan = await callPlanGenerationAPI(data);
+    console.log("✅ API接続成功: プランを受信しました", travelPlan);
+    alert("プランの生成に成功しました！\n結果画面へ移動します。");
     // プランをlocalStorageに保存
     localStorage.setItem("generatedPlan", JSON.stringify(travelPlan));
   } catch (error) {
+    console.error("❌ API接続エラー:", error);
+    alert(`サーバーへの接続に失敗しました。\nバックエンド(FastAPI)が起動しているか確認してください。\n\nエラー詳細: ${error.message}`);
     // エラーでもプレビューは表示（ダミーデータで表示）
   }
 }

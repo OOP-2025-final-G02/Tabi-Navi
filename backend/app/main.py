@@ -6,7 +6,7 @@ FastAPI アプリケーションの初期化と設定
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pathlib import Path
 from contextlib import asynccontextmanager
 from .database.db import init_db
@@ -61,6 +61,11 @@ frontend_path = project_root / "frontend"
 
 print(f"📂 Project Root: {project_root}")
 print(f"📂 Frontend Path: {frontend_path}")
+
+# favicon.ico 404エラー回避用（アイコンがない場合は204 No Contentを返す）
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return Response(status_code=204)
 
 # ルートパスで index.html を明示的に返す
 @app.get("/")
