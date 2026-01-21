@@ -3,9 +3,6 @@
   <!-- ヘッダー -->
   <div class="plan-header">
     <h1 class="plan-title">✨ 旅行プランプレビュー</h1>
-    <button class="btn-back" onclick="router.loadPage('input-form')">
-      ← 条件を変更
-    </button>
   </div>
 
   <!-- プラン概要 -->
@@ -51,28 +48,58 @@
 
   <!-- 日程プレビューセクション -->
   <div class="schedule-preview-card">
-    <h2 class="card-title" id="schedule-title">生成されたプラン</h2>
-
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2 class="card-title" id="schedule-title" style="margin: 0;">生成されたプラン</h2>
+      <button
+        class="btn-pdf"
+        onclick="exportToPDF()"
+        style="
+          background-color: #007bff;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: bold;
+        "
+      >
+        PDFに保存
+      </button>
+    </div>
     <div id="schedule-preview-container" class="schedule-preview-timeline">
       <!-- JavaScript で動的に生成 -->
     </div>
   </div>
 
-  <!-- アクション -->
-  <div class="plan-actions">
-    <button id="btn-save-plan" class="btn btn-primary">
-      プランを保存してホームに戻る
-    </button>
-  </div>
+    <!-- アクション -->
+    <div class="plan-actions">
+      <button
+        class="btn-back"
+        onclick="router.loadPage('input-form')"
+        style="border: 1px solid #007bff; color: #007bff"
+      >
+        ← 条件を変更
+      </button>
+      <button
+        id="btn-save-plan"
+        class="btn btn-primary"
+        style="background-color: #007bff; color: white"
+      >
+        プランを保存してホームに戻る
+      </button>
+    </div>
 
-  <!-- 既存コード保持 -->
-  <div class="form-group" style="display: none">
-    <label for="interests">興味・関心</label>
-    <textarea
-      id="interests"
-      name="interests"
-      placeholder="例: 観光、グルメ、ショッピング、温泉"
-      rows="4"
-    ></textarea>
+
+    <!-- 既存コード保持 -->
+    <div class="form-group" style="display: none">
+      <label for="interests">興味・関心</label>
+      <textarea
+        id="interests"
+        name="interests"
+        placeholder="例: 観光、グルメ、ショッピング、温泉"
+        rows="4"
+      ></textarea>
+    </div>
   </div>
 </div>

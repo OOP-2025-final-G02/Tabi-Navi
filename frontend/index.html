@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/result.css" />
     <link rel="stylesheet" href="css/form.css" />
     <link rel="stylesheet" href="css/list.css" />
+    <!-- PDF生成ライブラリ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   </head>
   <body>
     <!-- ヘッダー -->
@@ -26,6 +28,7 @@
     <script src="js/router.js"></script>
     <script src="js/list.js"></script>
     <script src="js/plan-generator.js"></script>
+    <script src="js/pdf-export.js"></script>
     <script>
       window.addEventListener("DOMContentLoaded", () => {
         router.init();
