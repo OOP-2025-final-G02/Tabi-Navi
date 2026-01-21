@@ -302,29 +302,35 @@ python -m uvicorn app.main:app --reload
    - 興味カテゴリ（複数選択可）
    - 絶対に行きたい場所（任意）
 
-![旅行条件を入力](images/A5D73C47-9B7F-4912-8319-A0644482AD87_1_201_a.jpeg)
+![旅行条件を入力](A5D73C47-9B7F-4912-8319-A0644482AD87_1_201_a.jpeg)
 
 
 2. **プラン生成**
 
    - 「プラン生成」ボタンをクリック
-![alt text](images/71C9D1BD-9887-4C10-B69E-CB151A079A96_4_5005_c.jpeg)
+![alt text](71C9D1BD-9887-4C10-B69E-CB151A079A96_4_5005_c.jpeg)
 
-![alt text](B3918981-A6B0-43FE-8B0C-AE17E7BE6995_1_201_a.jpeg)
 3. **プラン確認**
 
    - 日別のスケジュールをタイムラインで確認
    - 観光スポット、移動手段、費用の詳細を確認
 ![旅行プランプレビュー](F1EA518D-A8A0-419E-A46A-214C5E4CBBDB_1_201_a.jpeg)
 
-4. **新しいプラン作成**
-   - 「新しいプランを作成」ボタンで条件を変更して再生成
+4. **プランの条件を変更**
+   - 「条件を変更」ボタンで条件を変更して再生成
+<img width="495" height="101" alt="スクリーンショット 2026-01-22 6 05 42" src="https://github.com/user-attachments/assets/ccb1df24-b416-4fa7-bd47-f0c9625a2fc8" />
 
-![プランを保存](images/0D55F8F4-2B11-4D1D-B82B-627EA9C49879_4_5005_c.jpeg)
 
 5. **プランのPDF化**
 - 「PDFに保存」ボタンで生成したプランをPDF化
 ![PDFに保存](F1EA518D-A8A0-419E-A46A-214C5E4CBBDB_4_5005_c.jpeg)
+
+
+6. **プランの保存**
+- 「プランを保存してホームに戻る」ボタンで生成したプランを保存
+<img width="495" height="101" alt="スクリーンショット 2026-01-22 6 05 42" src="https://github.com/user-attachments/assets/75844539-b31e-4a8b-a01e-95be6818257b" />
+
+
 ## 開発
 
 ### API 仕様
