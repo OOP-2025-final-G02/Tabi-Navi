@@ -4,6 +4,34 @@
  */
 
 /**
+ * ローディング画面を表示
+ */
+function showLoading() {
+  const loadingOverlay = document.getElementById("loading-overlay");
+  console.log("showLoading called, loadingOverlay:", loadingOverlay);
+  if (loadingOverlay) {
+    loadingOverlay.classList.remove("hidden");
+    console.log("ローディング画面を表示しました");
+  } else {
+    console.warn("loading-overlayが見つかりません");
+  }
+}
+
+/**
+ * ローディング画面を非表示
+ */
+function hideLoading() {
+  const loadingOverlay = document.getElementById("loading-overlay");
+  console.log("hideLoading called, loadingOverlay:", loadingOverlay);
+  if (loadingOverlay) {
+    loadingOverlay.classList.add("hidden");
+    console.log("ローディング画面を非表示にしました");
+  } else {
+    console.warn("loading-overlayが見つかりません");
+  }
+}
+
+/**
  * フォーム入力値をlocalStorageに保存し、APIを呼び出す
  */
 async function saveFormToStorage() {
@@ -48,20 +76,34 @@ async function saveFormToStorage() {
   // localStorageに保存
   localStorage.setItem("travelFormData", JSON.stringify(data));
 
+  // ローディング画面を表示
+  showLoading();
+  console.log("saveFormToStorage: ローディング画面を表示しました");
+
   // バックエンド API を呼び出す
   try {
-    // console.log("🚀 プラン生成APIへの接続を開始します...");
+
     const travelPlan = await callPlanGenerationAPI(data);
     // console.log("✅ API接続成功: プランを受信しました", travelPlan);
     alert("プランの生成に成功しました！\n結果画面へ移動します。");
     // プランをlocalStorageに保存
     localStorage.setItem("generatedPlan", JSON.stringify(travelPlan));
+    console.log("saveFormToStorage: プラン生成完了、結果画面に遷移");
+    // 少し遅延させてからページ遷移（ローディング画面を見せるため）
+    setTimeout(() => {
+      hideLoading();
+      router.loadPage('plan-result');
+    }, 500);
   } catch (error) {
-    console.error("❌ API接続エラー:", error);
-    alert(`サーバーへの接続に失敗しました。\nバックエンド(FastAPI)が起動しているか確認してください。\n\nエラー詳細: ${error.message}`);
+
     // エラーでもプレビューは表示（ダミーデータで表示）
+    setTimeout(() => {
+      hideLoading();
+      router.loadPage('plan-result');
+    }, 500);
   }
 }
+
 
 /**
  * バックエンド /api/plans API を呼び出し
