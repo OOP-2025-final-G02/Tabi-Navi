@@ -5,11 +5,42 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
 from ..database.db import get_db
+from ..models.travel_plan import TravelPlan
 from ..services.plan_storage_service import plan_storage_service
 from ..services.history_service import history_service
 from ..utils.exceptions import PlanNotFoundError, DatabaseError
 
 router = APIRouter(prefix="/api/storage", tags=["storage"])
+
+
+@router.post("/plans")
+async def save_plan(
+    plan: TravelPlan,
+    db: Session = Depends(get_db)
+):
+    """
+    プランを保存（新規作成または更新）
+    フロントエンドの「保存」ボタン押下時に呼び出されます。
+    """
+    try:
+        # 既に存在するか確認
+        try:
+            await plan_storage_service.get_plan(plan.plan_id, db)
+            # 存在する場合は更新
+            await plan_storage_service.update_plan(plan.plan_id, plan, db)
+            message = "プランを更新しました"
+        except PlanNotFoundError:
+            # 存在しない場合は新規保存
+            await plan_storage_service.save_plan(plan, db)
+            message = "プランを保存しました"
+            
+        return {
+            "success": True,
+            "message": message,
+            "data": {"plan_id": plan.plan_id}
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"保存エラー: {str(e)}")
 
 
 @router.get("/plans/history")

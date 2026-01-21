@@ -50,10 +50,15 @@ async function saveFormToStorage() {
 
   // バックエンド API を呼び出す
   try {
+    // console.log("🚀 プラン生成APIへの接続を開始します...");
     const travelPlan = await callPlanGenerationAPI(data);
+    // console.log("✅ API接続成功: プランを受信しました", travelPlan);
+    alert("プランの生成に成功しました！\n結果画面へ移動します。");
     // プランをlocalStorageに保存
     localStorage.setItem("generatedPlan", JSON.stringify(travelPlan));
   } catch (error) {
+    console.error("❌ API接続エラー:", error);
+    alert(`サーバーへの接続に失敗しました。\nバックエンド(FastAPI)が起動しているか確認してください。\n\nエラー詳細: ${error.message}`);
     // エラーでもプレビューは表示（ダミーデータで表示）
   }
 }
@@ -84,10 +89,11 @@ async function callPlanGenerationAPI(formData) {
     interests: formData.interests
       ? formData.interests.split("、").filter((i) => i.trim())
       : [],
-    additional_notes: formData.mustVisit || "",
+    must_visit: formData.mustVisit || "",
+    travelers: formData.people || 1,
   };
-  // 下記のURLを環境変数で管理してください
-  const API_URL = "http://localhost:8000"; // ← 環境変数化予定
+  
+  const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
 
   const response = await fetch(`${API_URL}/api/plans`, {
     method: "POST",
@@ -123,7 +129,7 @@ function clearForm() {
   localStorage.removeItem("travelFormData");
   localStorage.removeItem("generatedPlan");
 
-  console.log("✅ フォームをクリアしました");
+  // console.log("✅ フォームをクリアしました");
 }
 /**
  * localStorageからフォーム入力値を復元
@@ -534,6 +540,45 @@ function displaySimpleSchedule(data) {
 }
 
 /**
+ * DBにプランを保存してホームに戻る
+ */
+async function savePlanToDB() {
+  const generatedPlan = localStorage.getItem("generatedPlan");
+  if (!generatedPlan) {
+    alert("保存するプランデータが見つかりません");
+    return;
+  }
+
+  const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
+
+  try {
+    const response = await fetch(`${API_URL}/api/storage/plans`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: generatedPlan, // localStorageの中身は既にJSON文字列
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || `保存エラー: ${response.status}`);
+    }
+
+    const result = await response.json();
+    alert(result.message || "プランを保存しました");
+
+    // ホーム（リスト画面）に戻る
+    if (typeof router !== "undefined") {
+      router.loadPage("list");
+    }
+  } catch (error) {
+    console.error("Save error:", error);
+    alert("保存中にエラーが発生しました: " + error.message);
+  }
+}
+
+/**
  * ページロード時の初期化
  */
 window.addEventListener("DOMContentLoaded", () => {
@@ -576,6 +621,16 @@ window.addEventListener("DOMContentLoaded", () => {
     } else if (pageName === "plan-result") {
       // plan-result ページが読み込まれたときプレビュー表示
       displayPreview();
+
+      // 保存ボタンのイベントリスナーを設定
+      // HTML側のボタンIDが 'btn-save-plan' であることを想定しています
+      const saveBtn = document.getElementById("btn-save-plan");
+      if (saveBtn) {
+        saveBtn.onclick = async (e) => {
+          e.preventDefault();
+          await savePlanToDB();
+        };
+      }
     }
   };
 });
