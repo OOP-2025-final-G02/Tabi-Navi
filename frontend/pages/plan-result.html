@@ -3,9 +3,7 @@
   <!-- ヘッダー -->
   <div class="plan-header">
     <h1 class="plan-title">✨ 旅行プランプレビュー</h1>
-    <button class="btn-back" onclick="router.loadPage('input-form')">
-      ← 条件を変更
-    </button>
+    
   </div>
 
   <!-- プラン概要 -->
@@ -60,9 +58,20 @@
 
   <!-- アクション -->
   <div class="plan-actions">
-
-    <button id="btn-save-plan" class="btn btn-primary">プランを保存してホームに戻る</button>
-
+    <button
+      class="btn-back"
+      onclick="router.loadPage('input-form')"
+      style="border: 1px solid #007bff; color: #007bff"
+    >
+      ← 条件を変更
+    </button>
+    <button
+      id="btn-save-plan"
+      class="btn btn-primary"
+      style="background-color: #007bff; color: white"
+    >
+      プランを保存してホームに戻る
+    </button>
   </div>
 
   <!-- 既存コード保持 -->
