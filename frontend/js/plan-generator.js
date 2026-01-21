@@ -56,7 +56,7 @@ async function saveFormToStorage() {
 
   // 選択された興味カテゴリを取得
   const selectedCategories = Array.from(
-    document.querySelectorAll(".interest-btn.active")
+    document.querySelectorAll(".interest-btn.active"),
   ).map((btn) => btn.getAttribute("data-category"));
   const interests = selectedCategories.join("、");
 
@@ -82,28 +82,23 @@ async function saveFormToStorage() {
 
   // バックエンド API を呼び出す
   try {
-
     const travelPlan = await callPlanGenerationAPI(data);
-    // console.log("✅ API接続成功: プランを受信しました", travelPlan);
-    alert("プランの生成に成功しました！\n結果画面へ移動します。");
     // プランをlocalStorageに保存
     localStorage.setItem("generatedPlan", JSON.stringify(travelPlan));
     console.log("saveFormToStorage: プラン生成完了、結果画面に遷移");
     // 少し遅延させてからページ遷移（ローディング画面を見せるため）
     setTimeout(() => {
       hideLoading();
-      router.loadPage('plan-result');
+      router.loadPage("plan-result");
     }, 500);
   } catch (error) {
-
     // エラーでもプレビューは表示（ダミーデータで表示）
     setTimeout(() => {
       hideLoading();
-      router.loadPage('plan-result');
+      router.loadPage("plan-result");
     }, 500);
   }
 }
-
 
 /**
  * バックエンド /api/plans API を呼び出し
@@ -134,8 +129,10 @@ async function callPlanGenerationAPI(formData) {
     must_visit: formData.mustVisit || "",
     travelers: formData.people || 1,
   };
-  
-  const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
+
+  const API_URL =
+    (typeof process !== "undefined" && process.env && process.env.API_URL) ||
+    "http://localhost:8000";
 
   const response = await fetch(`${API_URL}/api/plans`, {
     method: "POST",
@@ -257,18 +254,38 @@ function displayPreview() {
   setPreviewValue("preview-destination-value", data.destination);
   setPreviewValue(
     "preview-budget-value",
-    data.budget ? `¥${parseInt(data.budget).toLocaleString()}` : ""
+    data.budget ? `¥${parseInt(data.budget).toLocaleString()}` : "",
   );
   setPreviewValue(
     "preview-duration-value",
-    data.duration ? `${data.duration}日間` : ""
+    data.duration ? `${data.duration}日間` : "",
   );
   setPreviewValue(
     "preview-people-value",
-    data.people ? `${data.people}名` : ""
+    data.people ? `${data.people}名` : "",
   );
   setPreviewValue("preview-departure-value", data.departure);
-  setPreviewValue("preview-interests-value", data.interests);
+
+  // 興味カテゴリを日本語に変換して表示
+  const categoryNames = {
+    food: "グルメ・食べ歩き",
+    history: "歴史・名所",
+    nature: "自然・景色",
+    shopping: "ショッピング",
+    activity: "アクティビティ",
+    culture: "文化体験",
+  };
+
+  let displayInterests = data.interests;
+  if (data.interests) {
+    const categories = data.interests.split("、").filter((i) => i.trim());
+    const translatedCategories = categories.map(
+      (cat) => categoryNames[cat] || cat,
+    );
+    displayInterests = translatedCategories.join("、");
+  }
+
+  setPreviewValue("preview-interests-value", displayInterests);
 
   // 生成されたプランを表示
   const generatedPlan = localStorage.getItem("generatedPlan");
@@ -367,7 +384,7 @@ function displayAPISchedule(plan) {
   totalDiv.innerHTML = `
     <div><strong>合計費用:</strong> ¥${plan.total_cost.toLocaleString()}</div>
     <div><strong>合計時間:</strong> ${Math.floor(
-      plan.total_duration / 60
+      plan.total_duration / 60,
     )}時間</div>
   `;
   container.appendChild(totalDiv);
@@ -499,18 +516,18 @@ function createEditModal() {
       </form>
     </div>
   `;
-    // cd背景クリックで閉じる（modal-contentはクリックを止める）
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
-    
-    // modal-content内のクリックはイベント伝播を止める
-    const modalContent = modal.querySelector('.modal-content');
-    modalContent.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+  // cd背景クリックで閉じる（modal-contentはクリックを止める）
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  // modal-content内のクリックはイベント伝播を止める
+  const modalContent = modal.querySelector(".modal-content");
+  modalContent.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
 
   document.body.appendChild(modal);
   return modal;
@@ -591,7 +608,9 @@ async function savePlanToDB() {
     return;
   }
 
-  const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
+  const API_URL =
+    (typeof process !== "undefined" && process.env && process.env.API_URL) ||
+    "http://localhost:8000";
 
   try {
     const response = await fetch(`${API_URL}/api/storage/plans`, {
