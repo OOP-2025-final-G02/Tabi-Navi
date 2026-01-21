@@ -82,8 +82,10 @@ async function saveFormToStorage() {
 
   // バックエンド API を呼び出す
   try {
-    console.log("saveFormToStorage: API呼び出し開始");
+
     const travelPlan = await callPlanGenerationAPI(data);
+    // console.log("✅ API接続成功: プランを受信しました", travelPlan);
+    alert("プランの生成に成功しました！\n結果画面へ移動します。");
     // プランをlocalStorageに保存
     localStorage.setItem("generatedPlan", JSON.stringify(travelPlan));
     console.log("saveFormToStorage: プラン生成完了、結果画面に遷移");
@@ -93,7 +95,7 @@ async function saveFormToStorage() {
       router.loadPage('plan-result');
     }, 500);
   } catch (error) {
-    console.error("saveFormToStorage: API呼び出しエラー:", error);
+
     // エラーでもプレビューは表示（ダミーデータで表示）
     setTimeout(() => {
       hideLoading();
@@ -129,12 +131,11 @@ async function callPlanGenerationAPI(formData) {
     interests: formData.interests
       ? formData.interests.split("、").filter((i) => i.trim())
       : [],
-    additional_notes: formData.mustVisit || "",
+    must_visit: formData.mustVisit || "",
+    travelers: formData.people || 1,
   };
-
-  // TODO: バックエンド担当者へ
-  // 下記のURLを環境変数で管理してください
-  const API_URL = "http://localhost:8000"; // ← 環境変数化予定
+  
+  const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
 
   const response = await fetch(`${API_URL}/api/plans`, {
     method: "POST",
@@ -152,6 +153,27 @@ async function callPlanGenerationAPI(formData) {
 }
 
 /**
+ * フォームをクリア（新規作成時）
+ */
+function clearForm() {
+  const form = document.getElementById("travel-form");
+  if (!form) return;
+
+  // フォームのリセット
+  form.reset();
+
+  // 興味ボタンをクリア
+  document.querySelectorAll(".interest-btn").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+
+  // localStorageをクリア
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+
+  // console.log("✅ フォームをクリアしました");
+}
+/**
  * localStorageからフォーム入力値を復元
  */
 function restoreFormFromStorage() {
@@ -162,14 +184,22 @@ function restoreFormFromStorage() {
   if (savedData) {
     const data = JSON.parse(savedData);
 
-    if (document.getElementById("trip-title")) document.getElementById("trip-title").value = data.tripTitle || "";
-    if (document.getElementById("departure")) document.getElementById("departure").value = data.departure || "";
-    if (document.getElementById("destination")) document.getElementById("destination").value = data.destination || "";
-    if (document.getElementById("start-date")) document.getElementById("start-date").value = data.startDate || "";
-    if (document.getElementById("end-date")) document.getElementById("end-date").value = data.endDate || "";
-    if (document.getElementById("budget")) document.getElementById("budget").value = data.budget || "";
-    if (document.getElementById("people")) document.getElementById("people").value = data.people || 1;
-    if (document.getElementById("must-visit")) document.getElementById("must-visit").value = data.mustVisit || "";
+    if (document.getElementById("trip-title"))
+      document.getElementById("trip-title").value = data.tripTitle || "";
+    if (document.getElementById("departure"))
+      document.getElementById("departure").value = data.departure || "";
+    if (document.getElementById("destination"))
+      document.getElementById("destination").value = data.destination || "";
+    if (document.getElementById("start-date"))
+      document.getElementById("start-date").value = data.startDate || "";
+    if (document.getElementById("end-date"))
+      document.getElementById("end-date").value = data.endDate || "";
+    if (document.getElementById("budget"))
+      document.getElementById("budget").value = data.budget || "";
+    if (document.getElementById("people"))
+      document.getElementById("people").value = data.people || 1;
+    if (document.getElementById("must-visit"))
+      document.getElementById("must-visit").value = data.mustVisit || "";
 
     // 興味カテゴリを復元
     if (data.interests) {
@@ -193,11 +223,10 @@ function displayPreview() {
   if (!savedData) return;
 
   const data = JSON.parse(savedData);
-
-  // プラン概要を更新
+  // プラン概要を更新（タイトル部分）
   const titleText = data.tripTitle
     ? `${data.tripTitle}`
-    : `${data.destination}への旅行プラン`;
+    : `${data.destination || "未入力"}への旅行プラン`;
   const destEl = document.getElementById("preview-destination");
   if (destEl) destEl.textContent = titleText;
 
@@ -266,11 +295,13 @@ function generateSchedulePreview(data) {
   container.innerHTML = "";
 
   // API レスポンス形式かどうかを判定
-  if (data.schedules && Array.isArray(data.schedules)) {
-    // バックエンド API レスポンス形式
+  if (
+    data.schedules &&
+    Array.isArray(data.schedules) &&
+    data.schedules.length > 0
+  ) {
     displayAPISchedule(data);
   } else {
-    // 簡易プレビュー形式（フォームデータ）
     displaySimpleSchedule(data);
   }
 }
@@ -352,12 +383,10 @@ function deleteActivity(dayIndex, activityIndex) {
   try {
     const plan = JSON.parse(generatedPlan);
 
-
     if (
       plan.schedules[dayIndex] &&
       plan.schedules[dayIndex].timeline[activityIndex]
     ) {
-
       const activity = plan.schedules[dayIndex].timeline[activityIndex];
       const cost = activity.cost || 0;
 
@@ -470,6 +499,19 @@ function createEditModal() {
       </form>
     </div>
   `;
+    // cd背景クリックで閉じる（modal-contentはクリックを止める）
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+    
+    // modal-content内のクリックはイベント伝播を止める
+    const modalContent = modal.querySelector('.modal-content');
+    modalContent.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
   document.body.appendChild(modal);
   return modal;
 }
@@ -479,6 +521,16 @@ function createEditModal() {
  */
 function displaySimpleSchedule(data) {
   const container = document.getElementById("schedule-preview-container");
+
+  // 興味カテゴリIDを日本語に変換
+  const categoryNames = {
+    food: "グルメ・食べ歩き",
+    history: "歴史・名所",
+    nature: "自然・景色",
+    shopping: "ショッピング",
+    activity: "アクティビティ",
+    culture: "文化体験",
+  };
 
   // 入力値がない場合
   if (!data.duration || parseInt(data.duration) === 0) {
@@ -503,7 +555,7 @@ function displaySimpleSchedule(data) {
     if (data.interests) {
       const interestList = data.interests.split("、").slice(0, 2); // 最初の2つまで
       activities = interestList.map((interest) => ({
-        name: `${interest}体験`,
+        name: `${categoryNames[interest] || interest}体験`,
         time: `${9 + i}:00～${10 + i}:00`,
       }));
     }
@@ -530,17 +582,62 @@ function displaySimpleSchedule(data) {
 }
 
 /**
+ * DBにプランを保存してホームに戻る
+ */
+async function savePlanToDB() {
+  const generatedPlan = localStorage.getItem("generatedPlan");
+  if (!generatedPlan) {
+    alert("保存するプランデータが見つかりません");
+    return;
+  }
+
+  const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
+
+  try {
+    const response = await fetch(`${API_URL}/api/storage/plans`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: generatedPlan, // localStorageの中身は既にJSON文字列
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || `保存エラー: ${response.status}`);
+    }
+
+    const result = await response.json();
+    alert(result.message || "プランを保存しました");
+
+    // ホーム（リスト画面）に戻る
+    if (typeof router !== "undefined") {
+      router.loadPage("list");
+    }
+  } catch (error) {
+    console.error("Save error:", error);
+    alert("保存中にエラーが発生しました: " + error.message);
+  }
+}
+
+/**
  * ページロード時の初期化
  */
 window.addEventListener("DOMContentLoaded", () => {
-  // 保存されたフォーム値を復元
-  restoreFormFromStorage();
-
   // window.app オブジェクトにページロードコールバックを設定
   window.app = window.app || {};
   window.app.onPageLoaded = (pageName) => {
     if (pageName === "input-form") {
       const form = document.getElementById("travel-form");
+      // 新規作成の場合は古いデータをクリア
+      const shouldClearForm = sessionStorage.getItem("clearForm");
+      if (shouldClearForm === "true") {
+        clearForm();
+        sessionStorage.removeItem("clearForm");
+      } else {
+        // 保存されたフォーム値を復元
+        restoreFormFromStorage();
+      }
       if (form) {
         // 入力値をリアルタイムでlocalStorageに保存
         //form.addEventListener("input", saveFormToStorage);
@@ -566,6 +663,16 @@ window.addEventListener("DOMContentLoaded", () => {
     } else if (pageName === "plan-result") {
       // plan-result ページが読み込まれたときプレビュー表示
       displayPreview();
+
+      // 保存ボタンのイベントリスナーを設定
+      // HTML側のボタンIDが 'btn-save-plan' であることを想定しています
+      const saveBtn = document.getElementById("btn-save-plan");
+      if (saveBtn) {
+        saveBtn.onclick = async (e) => {
+          e.preventDefault();
+          await savePlanToDB();
+        };
+      }
     }
   };
 });

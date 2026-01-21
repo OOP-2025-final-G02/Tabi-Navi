@@ -15,6 +15,9 @@ function initializePage() {
   // - 保存されたプランデータの読み込み
   // - プランカードの動的生成
 
+  // プラン一覧を読み込んで表示
+  refreshPlanList();
+
   // 新規作成ボタンのイベントリスナーを登録
   const btnNewPlan = document.getElementById("btnNewPlan");
   if (btnNewPlan) {
@@ -43,6 +46,22 @@ async function fetchTravelPlans() {
   // ここにバックエンドAPIからプランデータを取得する処理を実装
   // 例: GET /api/plans
   // 返り値例: [{ id, destination, departure, startDate, endDate, participants, totalCost, ... }]
+  try {
+    console.log("🚀 プラン一覧の取得を開始します...");
+    // 環境変数が定義されていればそれを使い、なければデフォルト値を使用
+    const API_URL = (typeof process !== "undefined" && process.env && process.env.API_URL) || "http://localhost:8000";
+    const response = await fetch(`${API_URL}/api/storage/plans/history`);
+    
+    if (!response.ok) throw new Error("プラン一覧の取得に失敗しました");
+    
+    const result = await response.json();
+    console.log("✅ プラン一覧の取得に成功しました");
+    return result.success ? result.data : [];
+  } catch (error) {
+    console.error("Fetch error:", error);
+    alert("サーバーに接続できませんでした。\nバックエンドが起動しているか確認してください。");
+    return [];
+  }
 }
 
 /**
@@ -79,6 +98,26 @@ function renderPlanCards(plans) {
   // - planCards コンテナを取得
   // - 各プランデータからHTMLを生成
   // - DOM に追加
+  const container = document.getElementById("planCards");
+  if (!container) return;
+
+  if (!plans || plans.length === 0) {
+    showEmptyState();
+    return;
+  }
+
+  container.innerHTML = plans
+    .map((plan) => createPlanCardHTML(plan))
+    .join("");
+    
+  // イベントリスナー再登録（DOMを書き換えたため）
+  const planCards = document.querySelectorAll(".plan-card");
+  planCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const planId = card.getAttribute("data-plan-id");
+      handlePlanCardClick(planId);
+    });
+  });
 }
 
 /**
@@ -89,6 +128,45 @@ function renderPlanCards(plans) {
 function createPlanCardHTML(plan) {
   // ここにプランカードのHTMLテンプレートを生成する処理を実装
   // パラメータ例: { id, destination, departure, startDate, endDate, days, participants, totalCost }
+  
+  // DBのデータ構造に合わせてマッピング
+  const input = plan.input_data || {};
+  const destination = input.destination || "未定";
+  const departure = input.origin || "未定";
+  const startDate = input.start_date ? formatDate(input.start_date) : "-";
+  const endDate = input.end_date ? formatDate(input.end_date) : "-";
+  const days = calculateDays(input.start_date, input.end_date);
+  const participants = input.travelers || input.people || 1;
+  const cost = plan.total_cost || 0;
+
+  return `
+    <div class="plan-card" data-plan-id="${plan.plan_id}">
+      <h3 class="card-destination">${destination}</h3>
+      <p class="card-departure">
+        <span class="icon">📍</span>
+        <span>${departure}発</span>
+      </p>
+
+      <div class="card-details">
+        <div class="detail-item">
+          <span class="icon">📅</span>
+          <span>${startDate} - ${endDate}</span>
+          <span class="badge">${days}日間</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="icon">👥</span>
+          <span>${participants}名</span>
+        </div>
+
+        <div class="detail-item detail-cost">
+          <span class="icon">💰</span>
+          <span class="label">総費用</span>
+          <span class="cost">${formatCurrency(cost)}</span>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 /**
@@ -98,6 +176,8 @@ async function refreshPlanList() {
   // ここにプラン一覧の再読み込み処理を実装
   // - fetchTravelPlans() を呼び出し
   // - renderPlanCards() で再描画
+  const plans = await fetchTravelPlans();
+  renderPlanCards(plans);
 }
 
 /**
@@ -106,6 +186,10 @@ async function refreshPlanList() {
 function showEmptyState() {
   // ここにプランがない場合のメッセージ表示処理を実装
   // 例: 「保存されたプランはありません」
+  const container = document.getElementById("planCards");
+  if (container) {
+    container.innerHTML = '<div class="empty-state"><p>保存されたプランはまだありません。<br>「新規作成」からプランを作ってみましょう！</p></div>';
+  }
 }
 
 // ========================================
@@ -116,9 +200,13 @@ function showEmptyState() {
  * 新規作成ボタンクリック時の処理
  */
 function handleNewPlanClick() {
-  // ここに新規プラン作成画面への遷移処理を実装
+  // localStorageをクリア（新規作成時）
+  localStorage.removeItem("travelFormData");
+  localStorage.removeItem("generatedPlan");
+  sessionStorage.setItem("clearForm", "true");
+  console.log("新規作成ボタンがクリックされました - データクリア完了");
+
   // router.js を使用して input-form ページに遷移
-  console.log("新規作成ボタンがクリックされました");
   if (typeof router !== "undefined") {
     router.loadPage("input-form");
   }
@@ -162,6 +250,10 @@ function handleDeletePlanClick(event, planId) {
 function formatDate(date) {
   // ここに日付フォーマット処理を実装
   // 例: "2026-03-15" → "3/15"
+  if (!date) return "";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return date;
+  return `${d.getMonth() + 1}/${d.getDate()}`;
 }
 
 /**
@@ -173,6 +265,12 @@ function formatDate(date) {
 function calculateDays(startDate, endDate) {
   // ここに日数計算処理を実装
   // 例: 3/15 - 3/18 → 3日間
+  if (!startDate || !endDate) return 1;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diffTime = Math.abs(end - start);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  return diffDays + 1; // 当日含むため+1
 }
 
 /**
@@ -183,6 +281,7 @@ function calculateDays(startDate, endDate) {
 function formatCurrency(amount) {
   // ここに金額フォーマット処理を実装
   // 例: 145000 → "¥145,000"
+  return "¥" + Number(amount).toLocaleString();
 }
 
 /**
@@ -203,3 +302,23 @@ function showError(message) {
   // ここにエラー表示処理を実装
   // 例: トーストメッセージやアラートで表示
 }
+
+// ページロード時の初期化設定
+window.addEventListener("DOMContentLoaded", () => {
+  window.app = window.app || {};
+  
+  // 既存のハンドラを退避（plan-generator.jsなどとの競合回避）
+  const previousHandler = window.app.onPageLoaded;
+
+  window.app.onPageLoaded = (pageName) => {
+    // 既存のハンドラがあれば実行
+    if (previousHandler) {
+      previousHandler(pageName);
+    }
+
+    // リストページの処理
+    if (pageName === "list") {
+      initializePage();
+    }
+  };
+});

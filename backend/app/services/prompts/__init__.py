@@ -47,40 +47,34 @@ def create_travel_prompt(travel_input: TravelInput) -> str:
 
 ```json
 {{
-  "daily_schedules": [
+  "schedules": [
     {{
       "day": 1,
       "date": "2025-12-26",
       "timeline": [
         {{
           "time": "08:00",
-          "type": "meal",
-          "name": "朝食 - ホテルのレストラン",
-          "category": "グルメ",
+          "activity": "朝食 - ホテルのレストラン",
+          "location": "ホテル内",
           "duration": 30,
           "cost": 1500,
-          "description": "ホテルのビュッフェレストランで朝食。"
+          "notes": "ホテルのビュッフェレストランで朝食。"
         }},
         {{
           "time": "09:30",
-          "type": "transportation",
-          "name": "レンタカー移動",
-          "category": "移動",
+          "activity": "レンタカー移動",
+          "location": "移動",
           "duration": 60,
           "cost": 5000,
-          "method": "レンタカー",
-          "description": "ホテルからレンタカーでメインスポットへ移動"
+          "notes": "ホテルからレンタカーでメインスポットへ移動"
         }},
         {{
           "time": "10:30",
-          "type": "spot",
-          "name": "観光スポット名",
-          "category": "観光",
+          "activity": "観光スポット名",
+          "location": "観光地エリア",
           "duration": 120,
           "cost": 1000,
-          "latitude": 26.1955,
-          "longitude": 127.6747,
-          "description": "観光スポットの説明（100文字以内）"
+          "notes": "観光スポットの説明（100文字以内）"
         }}
       ],
       "daily_cost": 7500
@@ -94,12 +88,8 @@ def create_travel_prompt(travel_input: TravelInput) -> str:
       "daily_cost": 8000
     }}
   ],
-  "summary": {{
-    "total_cost": 50000,
-    "total_duration_minutes": 1440,
-    "highlights": ["必訪問地を含めた主要観光スポット3選"],
-    "tips": ["移動時間に気をつけてください"]
-  }}
+  "total_cost": 50000,
+  "total_duration": 1440
 }}
 ```
 
