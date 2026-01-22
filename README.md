@@ -179,7 +179,7 @@ pip install -r requirements.txt
 # 4. .env ファイルを作成（Gemini API キーを設定）
 cat > .env << EOF
 # Gemini API Key
-GEMINI_API_KEY=AIzaSyBNKbsX3sQ3Q94xdc9cNa32DPiDGeyY_Fc
+GEMINI_API_KEY=your_gemini_api_key_here
 
 # Server Configuration
 DEBUG=True
